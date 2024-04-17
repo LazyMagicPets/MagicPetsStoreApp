@@ -1,0 +1,132 @@
+﻿@*
+The Init page serves a few important purposes.
+
+1. Maui Hybrid and WASM apps do not setup the DI context exactly the same way. In MAUI, it is 
+necessary to pass the JSRuntime into classes that are not UI components. This is a good place 
+in the app bootstrap process to do that.
+
+2. Using this intermediary page is handy for isolating the initialization logic/UI and making it 
+simple to copy and reuse this page in other apps.
+
+3. By design, this initialization step affects the ISessionsViewModel state and thus the display 
+of the NavMenu.razor component. Generally, the NavMenu.razor component shows very little until 
+the ISessionsViewModel is initialized.
+
+Note: The ISessionsViewModel is generally first injected in the MainLayout.razor page.
+
+*@
+
+@namespace BlazorUI
+@page "/"
+@inherits LzCoreComponentBaseInjectViewModel<ISessionsViewModel>
+@inject IJSRuntime JSRuntime 
+@inject ILzHost Host
+@inject HttpClient HttpClient 
+@inject NavigationManager NavigationManager 
+
+@if(!configFound)
+{
+    if(configError)
+    {
+        <p>Could not read configuration </p>
+        <button @onclick="GetAuthConfigAsync">Retry</button>
+    }
+    else
+    {
+        <p>Reading Configuration</p>
+    }
+}
+
+@code {
+    private bool configFound = false;
+    private bool configError = false;
+    private bool navigatedToHome = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ViewModel!.IsInitialized)
+        {
+            var osAccess = new BlazorOSAccess(HttpClient, JSRuntime);
+            var internetConnectivity = new InternetConnectivity(JSRuntime);   
+            await ViewModel.InitAsync(osAccess, internetConnectivity);
+            await GetAuthConfigAsync();
+            await GetTenantConfigAsync();
+        }
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ViewModel!.SessionViewModel is null && configFound)
+        {
+            try
+            {
+                await ViewModel.CreateSessionAsync();
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"CreateSessionAsync failed. {ex.Message}");
+            }
+        }
+
+        if (!firstRender && ViewModel.IsInitialized && ViewModel.SessionViewModel is not null && !navigatedToHome)
+        {
+            navigatedToHome = true;
+            NavigationManager.NavigateTo("HomePage");
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    /// <summary>
+    /// GetAuthConfig retrieves auth configs from the host. 
+    /// It this finds the "adminuserpool" user pool and sets the AuthConfig property 
+    /// in the ViewModel.ClientConfig.AuthConfig.
+    /// </summary>
+    /// <returns></returns>
+    private async Task GetAuthConfigAsync()
+    {
+        ViewModel!.ClientConfig ??= new LzClientConfig();
+        var authconfigurl = Host.Url + "config";
+        configError = false;
+        try
+        {
+            var authconfigJson = await HttpClient.GetStringAsync(authconfigurl);
+            var authConfigs = JArray.Parse(authconfigJson);
+            foreach (var authConfig in authConfigs)
+            {
+                if(authConfig["userPoolName"]!.ToString().ToLower() == "employeeuserpool")
+                {
+                    ViewModel!.ClientConfig!.AuthConfig = (JObject)authConfig;
+                    break;
+                }
+            }
+        } catch (Exception ex)
+        {
+            Console.WriteLine("GetAuthConfig Failed. " + ex.Message);
+        }
+        finally
+        {
+
+            configFound = !string.IsNullOrEmpty(ViewModel!.ClientConfig?.AuthConfig["awsRegion"]?.ToString());
+            configError = !configFound;
+        }
+    }
+
+    private async Task GetTenantConfigAsync()
+    {
+        await Task.Delay(0);
+        ViewModel!.ClientConfig ??= new LzClientConfig();
+        var authconfigurl = Host.TenancyUrl + "_content/Tenancy/config.json";
+        try
+        {
+            var tenantConfigJson = await HttpClient.GetStringAsync(authconfigurl);
+            ViewModel!.TenancyConfig = JObject.Parse(tenantConfigJson);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("GetTenantConfig Failed. " + ex.Message);
+        }
+
+    }
+
+}

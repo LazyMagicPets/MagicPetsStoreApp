@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<DebugType>portable</DebugType>
+		<!--<Optimize>false</Optimize>-->
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimmerLog>trimmer.log</TrimmerLog>
+	</PropertyGroup>
+	<ItemGroup>
+	  <_WebToolingArtifacts Remove="Properties\PublishProfiles\FolderProfileDebug.pubxml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<TrimmerRootDescriptors Include="LinkerConfig.xml" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+	</ItemGroup> 
+
+	<ItemGroup>
+		<ProjectReference Include="..\BlazorUI\BlazorUI.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+	</ItemGroup>
+	
+	
+</Project>

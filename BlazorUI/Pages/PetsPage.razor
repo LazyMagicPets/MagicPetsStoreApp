@@ -1,0 +1,38 @@
+﻿@namespace BlazorUI
+@page "/PetsPage"
+@inherits LzCoreComponentBasePassViewModel<PetsViewModel>
+@inject ISessionsViewModel SessionsViewModel
+<h3>PetsPage</h3>
+@if(ViewModel!.IsLoading)
+{
+    <Busy />
+}
+else
+{
+    <button @onclick="OnTest">Test</button>
+    <p>TestString: @testString</p>
+    <button @onclick="OnPetsReload">Reload</button>
+    @foreach (var pet in ViewModel!.ViewModels.Values)
+    {
+        <p>@pet.Data!.Id @pet.Data!.Name @pet.Data!.Category.Name</p>
+    }
+}
+@code {
+    private string testString = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        ViewModel = SessionsViewModel!.SessionViewModel!.PetsViewModel;
+        base.OnInitialized();
+    }
+
+    private async Task OnPetsReload()
+    {
+        await ViewModel!.ReadAsync();
+    }
+
+    private async Task OnTest()
+    {
+        testString = await ViewModel!.TestAsync();
+    }
+}

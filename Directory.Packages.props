@@ -1,0 +1,21 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="LazyStack.Client.Auth.Cognito" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Client.DIHelper" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Client.FactoryGenerator" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Client.TreeViewModel" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Client.ViewModels.Auth.Notifications" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Blazor.Auth" Version="3.1.3" />
+    <PackageVersion Include="LazyStack.Shared" Version="3.1.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.1.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.1.2" />
+    <PackageVersion Include="LZMServiceClientSDK" Version="1.0.8" />
+    <PackageVersion Include="ReactiveUI" Version="19.6.1" />
+    <PackageVersion Include="ReactiveUI.Fody" Version="19.5.41" />
+  </ItemGroup>
+</Project>

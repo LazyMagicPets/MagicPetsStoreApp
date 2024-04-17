@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WASMApp", "WASMApp\WASMApp.csproj", "{2314DCB6-B9F2-4341-93A9-EA0AC34D0135}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "ViewModels\ViewModels.csproj", "{E13F761C-8CFA-497D-B5DF-CC92F5772909}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2CCA5FAD-700F-4E32-80C9-CD7597DD30DC}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+		.github\workflows\publish.yaml = .github\workflows\publish.yaml
+		README.md = README.md
+		ServiceVersion.props = ServiceVersion.props
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAUIApp", "MAUIApp\MAUIApp.csproj", "{9206E22F-357D-413A-965B-6809DA4FAA7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorUI", "BlazorUI\BlazorUI.csproj", "{A5B8961A-C4B0-4709-866A-8288C78B6116}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeRelease", "MakeRelease\MakeRelease.csproj", "{1D044BCF-7DAC-4124-B573-E4CF851A7C2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2314DCB6-B9F2-4341-93A9-EA0AC34D0135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2314DCB6-B9F2-4341-93A9-EA0AC34D0135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2314DCB6-B9F2-4341-93A9-EA0AC34D0135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2314DCB6-B9F2-4341-93A9-EA0AC34D0135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13F761C-8CFA-497D-B5DF-CC92F5772909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13F761C-8CFA-497D-B5DF-CC92F5772909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13F761C-8CFA-497D-B5DF-CC92F5772909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13F761C-8CFA-497D-B5DF-CC92F5772909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9206E22F-357D-413A-965B-6809DA4FAA7A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A5B8961A-C4B0-4709-866A-8288C78B6116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B8961A-C4B0-4709-866A-8288C78B6116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B8961A-C4B0-4709-866A-8288C78B6116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B8961A-C4B0-4709-866A-8288C78B6116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D044BCF-7DAC-4124-B573-E4CF851A7C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D044BCF-7DAC-4124-B573-E4CF851A7C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D044BCF-7DAC-4124-B573-E4CF851A7C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D044BCF-7DAC-4124-B573-E4CF851A7C2E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E8BF27B9-3AA0-4A3D-B875-B1CF1305D1E7}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,70 @@
+﻿@namespace BlazorUI
+@page "/HomePage"
+@*
+    CoreComponentBaseAssignViewModel<T> : LzReactiveComponentBaseAssignViewModel<T>
+    LzReactiveComponentBaseAssignViewModel<T> : ComponentBase, IViewFor<T>, INotifyPropertyChanged, ICanActivate, IDisposable
+    CoreComponentBaseAssignViewModel instruments the component with ReactiveUI bindings making it easy to implement MVVM with Blazor.
+    See also: 
+        CoreComponentBase<T> - view model injected directly
+        CoreComponentBasePassViewModel<T> - view model passed as parameter
+*@
+@inherits LzCoreComponentBaseAssignViewModel<ISessionViewModel>
+
+@*
+    SessionsViewModel
+    Most pages inject ISessionsViewModel and the ISessionModel is assigned in the OnInitializedAsync method
+        ViewModel = SessionsViewModel.SessionViewModel
+    Note: The bindings of the component to the underlying view model, (in this case ISessionViewModel),
+    are one-to-one. You can't bind multiple view models to a single component. This is a limitation imposed by
+    the underlying ReactiveUI ReactiveComponentBase class. Generally, this is a good thing. If you find you are 
+    trying to use multiple view models in the same component, it's a good indication you need another component.
+*@
+@inject ISessionsViewModel SessionsViewModel
+
+@if (ViewModel!.IsSignedIn)
+{
+    <h1>Welcome, @ViewModel!.AuthProcess.Login</h1>
+}
+else
+{
+    <h1>Hi there, lets get connected!</h1>
+}
+<LzAuth ViewModel="@ViewModel!.AuthProcess"/>
+<button @onclick="OnWSConnect">WebSocket Connect</button>
+<button @onclick="OnSendMessage">WebSocket Message</button>
+<button @onclick="OnWSDisconnect">WebSocket Disconnect</button>
+
+@if(ViewModel!.IsSignedIn)
+{
+    <button @onclick="OnGetJwt">Get JWT</button>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+
+        ViewModel = SessionsViewModel.SessionViewModel;
+        await base.OnInitializedAsync();
+    }
+    private async Task OnWSConnect() 
+    {
+        if (ViewModel?.NotificationsSvc is null) return;
+        await ViewModel.NotificationsSvc!.ConnectAsync();
+    }
+    private async Task OnWSDisconnect()
+    {
+        if (ViewModel?.NotificationsSvc is null) return;
+        await ViewModel!.NotificationsSvc.DisconnectAsync();
+    }
+    private async Task OnSendMessage()
+    {
+        if (ViewModel?.NotificationsSvc is null) return;
+        await ViewModel!.NotificationsSvc.SendAsync("test message");
+    }
+    private async Task OnGetJwt()
+    {
+        if (ViewModel?.AuthProcess is null) return;
+        var jwt = await ViewModel!.AuthProcess.GetJWTAsync();
+        Console.WriteLine("JWT:" + jwt);
+    }
+}

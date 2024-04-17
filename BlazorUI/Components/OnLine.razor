@@ -1,0 +1,13 @@
+﻿@namespace BlazorUI
+@inherits LzCoreComponentBasePassViewModel<ISessionViewModel> 
+@inject SessionsViewModel SessionsViewModel
+<h3>OnLine</h3>
+
+@code {
+
+protected override async Task OnInitializedAsync()
+    {
+        ViewModel = SessionsViewModel.SessionViewModel;
+        await base.OnInitializedAsync();
+    }   
+}

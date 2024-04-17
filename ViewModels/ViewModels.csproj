@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!--<SourceEmbedConfigFolder>..\..\Store.Config\ClientConfigToEmbed</SourceEmbedConfigFolder>-->
+		<DebugType>portable</DebugType>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<!--<Import Project="..\..\LazyStackClient\LazyStack.Config\EmbedConfig.xml" />-->
+
+	<ItemGroup>
+		<PackageReference Include="ReactiveUI.Fody" />
+		<PackageReference Include="ReactiveUI" />
+		<PackageReference Include="LazyStack.Client.FactoryGenerator" PrivateAssets="all" />
+		<PackageReference Include="LazyStack.Client.Auth.Cognito" />
+		<PackageReference Include="LazyStack.Client.ViewModels.Auth.Notifications" />
+		<PackageReference Include="LazyStack.Shared" />
+		<PackageReference Include="LZMServiceClientSDK" />
+	</ItemGroup>
+
+</Project>

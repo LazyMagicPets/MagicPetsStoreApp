@@ -1,0 +1,42 @@
+﻿@namespace BlazorUI
+@page "/AdminPage"
+@inherits LzCoreComponentBasePassViewModel<ISessionViewModel>
+@inject ISessionsViewModel SessionsViewModel
+<h3>AdminPage</h3>
+@if(isBusy) {
+    <Busy/>
+    <p>Busy</p>
+}
+else {
+    <button type="button" class="btn btn-secondary" @onclick="OnSeedDatabase">Seed Database</button>
+    <p>@seedDbStatus</p>
+}
+
+@code {
+    private string seedDbStatus = string.Empty;
+    private string busyStatus = string.Empty;
+    private bool isBusy = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel = SessionsViewModel.SessionViewModel;
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnSeedDatabase()
+    {
+        try
+        {
+            isBusy = true;
+            busyStatus = "Seeding Database";
+            await ViewModel!.Store.SeedPetsAsync();
+            seedDbStatus = "Seed Database Succeeded";
+        } catch (Exception ex)
+        {
+            seedDbStatus = $"Seed Database Error: {ex.Message}";
+        }
+        finally {
+            isBusy = false;
+        }
+    }
+}

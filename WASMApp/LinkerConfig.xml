@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<linker>
+	<assembly fullname="AWSSDK.CognitoIdentityProvider" preserve="all" />
+	<assembly fullname="AWSSDK.CognitoIdentityProviderConfig" preserve="all" />
+	<assembly fullname="AWSSDK.CognitoIdentity" preserve="all" />
+	<assembly fullname="AWSSDK.Core" preserve="all" />
+	<assembly fullname="Amazon.Extensions.CognitoAuthentication" preserve="all" />
+	<assembly fullname="System.Runtime.InteropServices.OSPlatform" preserve="all" />
+	<assembly fullname="System.Net.Http.HttpClient" preserve="all" />
+	<assembly fullname="Amazon.Util.Internal.PlatformServices.ServiceFactory" preserve="all" />
+</linker>

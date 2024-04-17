@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<!-- 
+		configfiles.json contains the names of each profile config file in the wwwroot folder.
+		Where there are multiple config files (for different profiles), we use the manifest 
+		to load them at runtime.
+		
+		Profiles allow you to select different service configuration to run against:
+		example:
+		dev.config.json
+		test.config.json
+		prod.config.json
+		
+		Configuration profiles are generally used for development.
+
+		If a "config.json" file exists, then this is considered to hold the default settings. Each 
+		configuration profile will start with the settins from config.json and a profile config file,
+		like dev.config.json, will override and extend the settings in config.json.
+		
+		Config files are NEVER checked into source control. Use the LazyStack Generate Client Config for stack 
+		tool to generate the file.
+		
+		When you deploy a SPA app, you will need to generate and deploy config.json file to the tenancy config S3 
+		bucket.
+		-->
+	<Target Name="GenerateConfigFileManifest" AfterTargets="Build">
+		<ItemGroup>
+			<ConfigFiles Include="wwwroot\*.config.json" />
+		</ItemGroup>
+		<PropertyGroup>
+			<ConfigFilesJsonPath>$(ProjectDir)wwwroot/configfiles.json</ConfigFilesJsonPath>
+			<ConfigFilesJsonContent>[@(ConfigFiles->'"%(Filename)%(Extension)"', ',')]</ConfigFilesJsonContent>
+		</PropertyGroup>
+		<WriteLinesToFile File="$(ConfigFilesJsonPath)" Lines="$(ConfigFilesJsonContent)" Overwrite="true" />
+	</Target>
+
+</Project>

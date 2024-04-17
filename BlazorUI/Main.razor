@@ -1,0 +1,44 @@
+﻿@namespace BlazorUI
+@inject IJSRuntime JSRuntime
+@inject ILzHost Host
+<Router AppAssembly="@typeof(Main).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    private string tenancyHostUrl = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        // setTenacyHostUrl is only available in WASM development. It is defined in the 
+        // service-worker.js file and not in the service-worker.published.js file.
+        // Note that the MAUI app does not have a service-worker.js or service-workder.published.js file.
+        // In development, we need to set the tenancyHostUrl so that tenancy resources can be loaded 
+        // from the correct host. 
+        if(Host.IsLocal && Host.IsWASM)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("setTenancyHostUrl", Host.TenancyUrl);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

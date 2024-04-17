@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WASMApp\WASMApp.csproj" />
+	</ItemGroup>
+
+	<Target Name="DeleteFiles" BeforeTargets="Build">
+
+		<MakeDir Directories="..\Release" />
+
+		<ItemGroup>
+			<FilesToDelete Include="..\Release\*.zip"/>
+		</ItemGroup>
+		<Message Text="Deleting Files @(FilesToDelete)"/>
+		<Delete Files="@(FilesToDelete)">
+			<Output
+			   TaskParameter="DeletedFiles"
+			   ItemName="FilesDeleted"/>
+		</Delete>
+		<Message Text="Files deleted: @(FilesDeleted)"/>
+	</Target>
+
+	<Target
+		Condition="'$(Configuration)' == 'Release'"
+		Name="ZipPublishOutput" 
+		AfterTargets="Build">
+
+		<ZipDirectory
+			Condition="Exists('../WASMApp/bin/Release/net8.0/publish/wwwroot')"
+			SourceDirectory="../WASMApp/bin/Release/net8.0/publish/wwwroot"
+			DestinationFile="../Release/App.zip" />
+	</Target>
+
+</Project>

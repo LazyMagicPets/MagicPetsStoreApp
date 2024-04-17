@@ -1,0 +1,58 @@
+﻿@*
+    This component displays very little until the ISessionsViewModel is 
+    initialized.
+*@
+
+@namespace BlazorUI
+@inherits LzCoreComponentBasePassViewModel<ISessionsViewModel>  
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">@AppConfig.TenantName</a>
+        <img src="_content/Tenancy/storeicon.jpg" alt="Store Icon" style="width:40px; height:40px;" />
+        <span style="color:aliceblue">@Title</span>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+
+            @if(ViewModel!.IsInitialized)
+            {
+                <NavLink class="nav-link" href="HomePage" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+
+                @if (ViewModel!.IsSignedIn)
+                {
+                    @if (ViewModel!.IsAdmin)
+                    {
+                        <NavLink class="nav-link" href="AdminPage" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span>Admin
+                        </NavLink>
+                    }
+
+                    <NavLink class="nav-link" href="PetsPage" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span>Pets
+                    </NavLink>
+                }
+            }
+        </div>
+    </nav>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+} 
