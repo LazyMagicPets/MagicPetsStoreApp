@@ -22,4 +22,4 @@ $SystemGuid = $config.SystemGuid
 
 dotnet publish -p:Publishprofile=FolderProfile
 
-aws s3 cp .\bin\Release\net8.0\publish\wwwroot s3://webapp-admin-$SystemGuid/wwwroot --recursive --profile lzm-dev
+aws s3 cp .\bin\Release\net8.0\publish\wwwroot s3://webapp-employee-$SystemGuid/wwwroot --recursive --profile lzm-dev

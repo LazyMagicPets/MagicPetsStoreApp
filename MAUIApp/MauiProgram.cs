@@ -29,7 +29,7 @@ public static class MauiProgram
 #endif
 
         var localHost = false; // flip this to true to hit the local host api
-
+        var cloudHost = "https://uptown.lazymagicdev.click/";
         var apiUrl = string.Empty;  
         var tenancyUrl = string.Empty;  
 
@@ -37,8 +37,8 @@ public static class MauiProgram
         {
             apiUrl = localHost
                 ? (isAndroid ? "http://localhost:5011" : "https://localhost:5001")
-                : "https://uptown.lazymagicdev.click";
-            tenancyUrl = "https://uptown.lazymagicdev.click";
+                : cloudHost;
+            tenancyUrl = cloudHost;
         }
         else 
         {

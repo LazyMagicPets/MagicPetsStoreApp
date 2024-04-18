@@ -1,4 +1,4 @@
-﻿# PestApp 
+﻿# App 
 
 This solution contains a sample cross platform application supporting iOS, Android, Windows, MacOS and Web apps. 
 This client app uses Model View ViewModel (MVVM) architecture and is built using the LazyStackClient framework. 

@@ -1,6 +1,6 @@
 ﻿namespace ViewModels;
 
-public static class ConfigureStore
+public static class ConfigureViewModels
 {
     public static IServiceCollection AddAppViewModels(this IServiceCollection services)
     {
@@ -28,7 +28,7 @@ public static class ConfigureStore
     public static ILzMessages AddAppViewModels(this ILzMessages messages)
     {
         //var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
-        var assembly = typeof(ConfigureStore).Assembly;
+        var assembly = typeof(ConfigureViewModels).Assembly;
 
         var assemblyName = assembly!.GetName().Name;
 

@@ -2,12 +2,12 @@
 
 namespace BlazorUI;
 
-public static class ConfigureStore
+public static class ConfigureBlazorUI
 {
     public static IServiceCollection AddBlazorUI(this IServiceCollection services)
     {
         //var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
-        var assembly = typeof(ConfigureStore).Assembly;
+        var assembly = typeof(ConfigureBlazorUI).Assembly;
         ILzMessages messages = new LzMessages();
         // Load in order of override. Messages in the last loaded file
         // will override messages in the first loaded file.
@@ -29,7 +29,7 @@ public static class ConfigureStore
     public static ILzMessages AddApp(this ILzMessages messages)
     {
         //var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
-        var assembly = typeof(ConfigureStore).Assembly;
+        var assembly = typeof(ConfigureBlazorUI).Assembly;
 
         var assemblyName = assembly!.GetName().Name;
 

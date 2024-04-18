@@ -9,7 +9,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">@AppConfig.TenantName</a>
-        <img src="_content/Tenancy/storeicon.jpg" alt="Store Icon" style="width:40px; height:40px;" />
+        <img src="_content/Tenancy/appicon.webp" alt="App Icon" style="width:40px; height:40px;" />
         <span style="color:aliceblue">@Title</span>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
@@ -47,7 +47,7 @@
 
 @code {
     [Parameter] public string Title { get; set; } = "";
-    private bool collapseNavMenu = true;
+    private bool collapseNavMenu = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 

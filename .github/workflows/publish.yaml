@@ -1,0 +1,112 @@
+name: Publish NuGet
+# This workflow is triggered on pushes to the master branch.
+# 
+# It builds and publishes SPA App zip files to a release.
+# 
+# The release version is determined by the ServiceVersion.props file in the 
+# Visual Studio solution folder.
+#
+# This workflow checks if the release already exists and errors out if it does.
+# Basically, we are treating release versions the same way we treat nuget package 
+# versions. They are immutable and cannot be changed once published.
+#
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Read ServiceVersion.props and write ServiceVersion.txt
+      # Unfortunately, echo to GITHUB_ENV in pwsh doesn't seem to work correctly
+      # so we write to a temporary file instead and then use cat to read the file in 
+      # the next step using the bash shell.
+      id: read_version
+      shell: pwsh
+      run: |
+        [xml]$xmlContent = Get-Content ./ServiceVersion.props
+        $serviceVersion = $xmlContent.Project.PropertyGroup.ServiceVersion
+        Set-Content -Path 'ServiceVersion.txt' -Value v$serviceVersion
+
+    - name: Read ServiceVersion.txt and set env.SERVICE_VERSION
+      shell: bash
+      run: |
+        SERVICE_VERSION=$(cat ServiceVersion.txt)
+        echo "SERVICE_VERSION=$SERVICE_VERSION" >> $GITHUB_ENV
+
+    - name: Check if release exists and error out if it does
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Ensuring the token is available for authentication
+        TAG_NAME: ${{ env.SERVICE_VERSION }} # Set this to the tag name you're checking for
+      run: |
+        echo "Checking for release $TAG_NAME..."
+        RELEASES=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${{ github.repository }}/releases")
+        EXISTS=$(echo $RELEASES | jq '.[] | select(.tag_name == env.TAG_NAME) | .id')
+        if [ ! -z "$EXISTS" ]; then
+          echo "Release $TAG_NAME already exists."
+          exit 1
+        else
+          echo "Release $TAG_NAME does not exist. Continuing..."
+        fi
+      shell: bash
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
+       
+
+    - name: Create NuGet.Config
+      # Set up NuGet.Config to use the GitHub InSciCo NuGet feed. 
+      run: |
+        dotnet nuget add source --username not-required --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name InSciCo "https://nuget.pkg.github.com/InSciCo/index.json"
+        dotnet nuget add source --username not-required --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name LazyMagicNet "https://nuget.pkg.github.com/LazyMagicNet/index.json"
+        cat > NuGet.Config << EOF
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSourceMapping>
+            <packageSource key="nuget.org">
+              <package pattern="*" />
+            </packageSource>
+            <packageSource key="InSciCo">
+              <package pattern="*" />
+              <!-- Add other patterns as needed -->
+            </packageSource>
+            <packageSource key="LazyMagicNet">
+              <package pattern="*" />
+              <!-- Add other patterns as needed -->
+            </packageSource>
+          </packageSourceMapping>
+        </configuration>
+        EOF
+
+
+    - name: Install WASM-Tools
+      run:  dotnet workload install wasm-tools
+
+    # dotnet publish WASM App(s)
+    - name: Build # Build WASM
+      run: | 
+        cd WASMApp
+        dotnet publish --configuration Release
+        cd ../MakeRelease
+        dotnet build --configuration Release 
+
+
+    - name: Publish Release
+      id: create_release 
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: "${{ env.SERVICE_VERSION }}"
+        name: "Release ${{ env.SERVICE_VERSION }}"
+        draft: false
+        prerelease: false
+        files: |
+          ./Release/*.zip

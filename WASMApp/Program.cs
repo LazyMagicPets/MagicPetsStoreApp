@@ -58,7 +58,7 @@ public partial class Program
                 isMAUI: false, // sets isWASM to true
                 isAndroid: false, 
                 isLocal: isLocal))
-            .AddBlazorUI(); // See Config/ConfigureStore.cs
+            .AddBlazorUI(); // See Config/ConfigureViewModels.cs
 
         await builder.Build().RunAsync();
     }

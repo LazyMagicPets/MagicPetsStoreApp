@@ -1,18 +1,21 @@
 <!DOCTYPE html>
+<!-- We have modified the standard Blazor WASM Index.hmtl file to rely on assets
+    in the BlazorUI razor library project where the App UI lives. The intent is to
+    have the skinniest WASMApp possible so all App level UI code lives in the
+    BlazorUI library. -->
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Employee App</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png" />
     <link href="WASMApp.styles.css" rel="stylesheet" />
-    <link href="manifest.json" rel="manifest" />
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    <link href="_content/BlazorUI/manifest.json" rel="manifest" />
+    <link href="_content/BlazorUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
+    <!-- Do not load application component speicific styles inline. Instead put them
+        in the indexhead.js script. -->
+    <script src="_content/BlazorUI/indexhead.js"></script>
 </head>
 
 <body>
@@ -23,32 +26,16 @@
         </svg>
         <div class="loading-progress-text"></div>
     </div>
-
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
 
+    <!-- Do not load application component specific scripts inline. Instead load them
+        in the indexbody.js script. -->
+    <script src="_content/BlazorUI/indexbody.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>
-        window.setTenancyHostUrl = function (url) {
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({
-                    type: 'SET_TENANCY_HOST_URL',
-                    url: url
-                });
-            }
-        }
-        window.onload = function () {
-            console.log("Window loaded");
-            if (performance.navigation.type === 1) { // 1 means the page is reloaded
-                console.log("Page reload detected. Redirecting to root...");
-                window.location.href = '/'; // Redirect to the root of the application
-            }
-        }
-    </script>
-
     <script>
         navigator.serviceWorker.register('service-worker.js');
     </script>
