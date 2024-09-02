@@ -9,10 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\appConfig.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="wwwroot\appConfig.js" />
 	</ItemGroup>
 

@@ -4,11 +4,14 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using LazyMagic.Blazor;
-
+using ViewModels;
+using System.Text.RegularExpressions;
 namespace MAUIApp;
 
 public static class MauiProgram
 {
+    private static JObject? _appConfig;
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -28,46 +31,29 @@ public static class MauiProgram
         //Platforms.Android.DangerousAndroidMessageHandlerEmitter.Register();
         //Platforms.Android.DangerousTrustProvider.Register();
 #endif
-        var isLocal = false;// flip this to true to hit the local host api
-        var cloudHost = "https://uptown.lazymagicdev.click/";
-        var apiUrl = string.Empty;  
-        var assetsUrl = string.Empty;
-        var wsUrl = string.Empty;
-        if ( Debugger.IsAttached )
-        {
-            apiUrl = isLocal
-                ? (isAndroid ? "http://localhost:5011" : "https://localhost:5001")
-                : cloudHost;
-            assetsUrl = cloudHost;
-            assetsUrl = cloudHost;
-            wsUrl = apiUrl.Replace("https", "wss").Replace("http", "ws") + "ws";
-        }
-        else
-        {
-            // The CI/CD pipeline is responsible for writing the hosturl.json file to the app package
-            // Resources/Raw folder. We don't put this file in wwwroot/Tenancy because recoruces in
-            // that folder may be retrieved from the host url instead of deployed with the app.
-            using var stream = FileSystem.OpenAppPackageFileAsync("hosturl.json").Result;    
-            using var reader = new StreamReader(stream);
-            var contents = reader.ReadToEnd();
-            apiUrl = assetsUrl = JObject.Parse(contents)["hosturl"]!.ToString();
-            wsUrl = assetsUrl.Replace("https", "wss").Replace("http", "ws") + "ws";
-        }
+        var isLocal = Debugger.IsAttached;
+        var configText = BlazorUI.AssemblyContent.ReadEmbeddedResource("wwwroot/appConfig.js");
+        _appConfig = ExtractDataFromJs(configText);
 
         builder.Services
             .AddSingleton<ILzMessages, LzMessages>()
             .AddSingleton<ILzClientConfig, LzClientConfig>()
             .AddSingleton(sp => new HttpClient())
-            .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(new HttpClient { BaseAddress = new Uri(assetsUrl) }))
+            .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
             .AddSingleton<BlazorInternetConnectivity>()
             .AddSingleton<IBlazorInternetConnectivity>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
             .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
             .AddSingleton<ILzHost>(sp => new LzHost(
-                url: apiUrl, 
-                assetsUrl: assetsUrl, 
-                isMAUI: true, 
+                appPath: (string)_appConfig!["appPath"]!, // app path
+                appUrl: (string)_appConfig!["appUrl"]!, // app url  
+                androidAppUrl: (string)_appConfig!["androidAppUrl"]!, // android app url 
+                remoteApiUrl: (string)_appConfig!["remoteApiUrl"]!,  // api url
+                localApiUrl: (string)_appConfig!["localApiUrl"]!, // local api url
+                assetsUrl: (string)_appConfig!["assetsUrl"]!, // tenancy assets url
+                isMAUI: true,
                 isAndroid: isAndroid,
-                isLocal: isLocal))
+                isLocal: isLocal,
+                useLocalhostApi: (bool)_appConfig!["useLocalHostApi"]!))
             .AddSingleton<IOSAccess, BlazorOSAccess>()
             .AddMauiBlazorWebView();
 
@@ -78,5 +64,22 @@ public static class MauiProgram
         builder.Services
         .AddBlazorUI();
         return builder.Build();
+    }
+
+    private static JObject? ExtractDataFromJs(string content)
+    {
+        string pattern = @"\{[^{}]*\}";
+        Match match = Regex.Match(content, pattern);
+
+        if (match.Success)
+        {
+            string jsonText = match.Value;
+            JObject jsonObject = JObject.Parse(jsonText);
+            return jsonObject;
+        }
+        else
+        {
+            return null;
+        }
     }
 }
