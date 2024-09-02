@@ -36,7 +36,7 @@
 		configuration profile will start with the settins from config.json and a profile config file,
 		like dev.config.json, will override and extend the settings in config.json.
 		
-		Config files are NEVER checked into source control. Use the LazyStack Generate Client Config for stack 
+		Config files are NEVER checked into source control. Use the LazyMagic Generate Client Config for stack 
 		tool to generate the file.
 		
 		When you deploy a SPA app, you will need to generate and deploy config.json file to the tenancy config S3 

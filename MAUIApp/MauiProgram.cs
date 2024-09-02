@@ -1,8 +1,9 @@
-﻿using LazyStack.Client.Base;
+﻿using LazyMagic.Client.Base;
 using BlazorUI;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using LazyMagic.Blazor;
 
 namespace MAUIApp;
 
@@ -27,20 +28,21 @@ public static class MauiProgram
         //Platforms.Android.DangerousAndroidMessageHandlerEmitter.Register();
         //Platforms.Android.DangerousTrustProvider.Register();
 #endif
-
-        var localHost = false; // flip this to true to hit the local host api
+        var isLocal = false;// flip this to true to hit the local host api
         var cloudHost = "https://uptown.lazymagicdev.click/";
         var apiUrl = string.Empty;  
-        var tenancyUrl = string.Empty;  
-
-        if( Debugger.IsAttached )
+        var assetsUrl = string.Empty;
+        var wsUrl = string.Empty;
+        if ( Debugger.IsAttached )
         {
-            apiUrl = localHost
+            apiUrl = isLocal
                 ? (isAndroid ? "http://localhost:5011" : "https://localhost:5001")
                 : cloudHost;
-            tenancyUrl = cloudHost;
+            assetsUrl = cloudHost;
+            assetsUrl = cloudHost;
+            wsUrl = apiUrl.Replace("https", "wss").Replace("http", "ws") + "ws";
         }
-        else 
+        else
         {
             // The CI/CD pipeline is responsible for writing the hosturl.json file to the app package
             // Resources/Raw folder. We don't put this file in wwwroot/Tenancy because recoruces in
@@ -48,13 +50,26 @@ public static class MauiProgram
             using var stream = FileSystem.OpenAppPackageFileAsync("hosturl.json").Result;    
             using var reader = new StreamReader(stream);
             var contents = reader.ReadToEnd();
-            apiUrl = tenancyUrl = JObject.Parse(contents)["hosturl"]!.ToString();    
+            apiUrl = assetsUrl = JObject.Parse(contents)["hosturl"]!.ToString();
+            wsUrl = assetsUrl.Replace("https", "wss").Replace("http", "ws") + "ws";
         }
 
         builder.Services
-        .AddSingleton(sp => new HttpClient())
-        .AddSingleton<ILzHost>(sp => new LzHost(url: apiUrl, tenancyUrl: tenancyUrl, isMAUI: true, isAndroid: isAndroid))
-        .AddMauiBlazorWebView();
+            .AddSingleton<ILzMessages, LzMessages>()
+            .AddSingleton<ILzClientConfig, LzClientConfig>()
+            .AddSingleton(sp => new HttpClient())
+            .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(new HttpClient { BaseAddress = new Uri(assetsUrl) }))
+            .AddSingleton<BlazorInternetConnectivity>()
+            .AddSingleton<IBlazorInternetConnectivity>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
+            .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
+            .AddSingleton<ILzHost>(sp => new LzHost(
+                url: apiUrl, 
+                assetsUrl: assetsUrl, 
+                isMAUI: true, 
+                isAndroid: isAndroid,
+                isLocal: isLocal))
+            .AddSingleton<IOSAccess, BlazorOSAccess>()
+            .AddMauiBlazorWebView();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

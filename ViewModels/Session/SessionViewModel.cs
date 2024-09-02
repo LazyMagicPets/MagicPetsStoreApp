@@ -11,29 +11,38 @@ namespace ViewModels;
 public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionViewModel, ILzTransient
 {
     public SessionViewModel(
-        IOSAccess osAccess, // singleton
-        ILzClientConfig clientConfig, // singleton
-        IInternetConnectivitySvc internetConnectivity, // singleton
+        [FactoryInject] ILzClientConfig clientConfig, // singleton
+        [FactoryInject] IInternetConnectivitySvc internetConnectivity, // singleton
         [FactoryInject] ILzHost lzHost, // singleton
         [FactoryInject] ILzMessages messages, // singleton
         [FactoryInject] IAuthProcess authProcess, // transient
-        [FactoryInject] IMethodMapWrapper methodMap, // singleton
         [FactoryInject] IPetsViewModelFactory petsViewModelFactory // transient
         )
-        : base( authProcess, osAccess, clientConfig, internetConnectivity, messages)  
+        : base( authProcess, clientConfig, internetConnectivity, messages)  
     {
-
-        ILzHttpClient httpClient = new LzHttpClient(clientConfig, methodMap, authProcess.AuthProvider, lzHost);
-        Store = new Service(httpClient);
-        NotificationsSvc = new StoreNotificationSvc(this, clientConfig, lzHost, internetConnectivity);
-        this.petsViewModelFactory = petsViewModelFactory ?? throw new ArgumentNullException(nameof(petsViewModelFactory));
-        PetsViewModel = petsViewModelFactory.Create(this);
-        TenantName = AppConfig.TenantName;
         try
         {
-            var _region = (string?)clientConfig.AuthConfig["awsRegion"] ?? throw new Exception("Cognito AuthConfig.region is null");
+            var tenantKey = (string?)clientConfig.TenantKey ?? throw new Exception("Cognito AuthConfig.tenantKey is null");
+
+            var securityLevelStr = (string?)clientConfig.AuthConfigs?["EmployeeAuth"]?["userPoolSecurityLevel"] ?? throw new Exception("Cognito AuthConfig.securityLevel is null");
+            var securityLevel = int.Parse(securityLevelStr);
+
+            ILzHttpClient httpClientStore = new LzHttpClient(securityLevel, tenantKey, authProcess.AuthProvider, lzHost);
+            Store = new StoreApi.StoreApi(httpClientStore);
+
+            ILzHttpClient httpClientConsumer = new LzHttpClient(securityLevel, tenantKey, authProcess.AuthProvider, lzHost);
+            Consumer = new ConsumerApi.ConsumerApi(httpClientConsumer);
+
+            ILzHttpClient httpClientPublic = new LzHttpClient(0, tenantKey, null, lzHost);
+            Public = new PublicApi.PublicApi(httpClientPublic);
+
+            NotificationsSvc = new StoreNotificationSvc(this, clientConfig, lzHost, internetConnectivity);
+            this.petsViewModelFactory = petsViewModelFactory ?? throw new ArgumentNullException(nameof(petsViewModelFactory));
+            PetsViewModel = petsViewModelFactory.Create(this);
+            TenantName = AppConfig.TenantName;
+            var _region = (string?)clientConfig.Region ?? throw new Exception("Cognito AuthConfig.region is null");
             var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
-            authProcess.SetAuthenticator(clientConfig.AuthConfig);
+            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["EmployeeAuth"]!);
         }
         catch (Exception ex)
         {
@@ -41,7 +50,10 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
             throw new Exception("opps");
         }
     }
-    public IService Store { get; set; }
+    public IStoreApi Store { get; set; }
+    public IConsumerApi Consumer { get; set; }
+    public IPublicApi Public { get; set; }  
+
     private IPetsViewModelFactory petsViewModelFactory;  
     public PetsViewModel PetsViewModel { get; set; }
     public string TenantName { get; set; } = string.Empty;

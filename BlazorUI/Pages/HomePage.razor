@@ -8,7 +8,7 @@
         CoreComponentBase<T> - view model injected directly
         CoreComponentBasePassViewModel<T> - view model passed as parameter
 *@
-@inherits LzCoreComponentBaseAssignViewModel<ISessionViewModel>
+@inherits LzComponentBaseAssignViewModel<ISessionViewModel>
 
 @*
     SessionsViewModel
@@ -21,28 +21,28 @@
 *@
 @inject ISessionsViewModel SessionsViewModel
 
-@if (ViewModel!.IsSignedIn)
-{
-    <h1>Welcome, @ViewModel!.AuthProcess.Login</h1>
-}
-else
-{
-    <h1>Hi there, lets get connected!</h1>
-}
-<LzAuth ViewModel="@ViewModel!.AuthProcess"/>
-<button @onclick="OnWSConnect">WebSocket Connect</button>
-<button @onclick="OnSendMessage">WebSocket Message</button>
-<button @onclick="OnWSDisconnect">WebSocket Disconnect</button>
 
-@if(ViewModel!.IsSignedIn)
-{
-    <button @onclick="OnGetJwt">Get JWT</button>
-}
+<MudPaper Height="400px" Width="600px">
+    <MudContainer Fixed="true">
+
+        @if (ViewModel!.IsSignedIn)
+        {
+            <h1>Welcome, @ViewModel!.AuthProcess.Login</h1>
+        }
+        else
+        {
+            <h1>Hi there, lets get connected!</h1>
+        }
+        <LzAuth ViewModel="@ViewModel!.AuthProcess" />
+@*         <MudButton Variant="Variant.Filled" OnClick="OnWSConnect">WebSocket Connect</MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="OnSendMessage">WebSocket Message</MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="OnWSDisconnect">WebSocket Disconnect</MudButton> *@
+    </MudContainer>
+</MudPaper>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-
         ViewModel = SessionsViewModel.SessionViewModel;
         await base.OnInitializedAsync();
     }
@@ -60,11 +60,5 @@ else
     {
         if (ViewModel?.NotificationsSvc is null) return;
         await ViewModel!.NotificationsSvc.SendAsync("test message");
-    }
-    private async Task OnGetJwt()
-    {
-        if (ViewModel?.AuthProcess is null) return;
-        var jwt = await ViewModel!.AuthProcess.GetJWTAsync();
-        Console.WriteLine("JWT:" + jwt);
     }
 }

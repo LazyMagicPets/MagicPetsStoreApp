@@ -23,7 +23,7 @@ public class StoreNotificationSvc : LzNotificationSvc, ILzNotificationSvc
         this.WhenAnyValue(x => x.internetConnectivity.IsOnline, x => x.authProcess.IsSignedIn, (x, y) => x && y)
             .Do(x => Console.WriteLine($"yada: {x}"));
     }
-    private IService store;
+    private IStoreApi store;
     public override async Task<List<LzNotification>> ReadNotificationsAsync(string connectionId,  long lastDateTimeTick)
     {
         var notifications = new List<LzNotification>();

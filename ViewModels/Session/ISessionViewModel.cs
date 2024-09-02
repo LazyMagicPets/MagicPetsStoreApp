@@ -5,7 +5,9 @@ namespace ViewModels;
 
 public interface ISessionViewModel : ILzSessionViewModelAuthNotifications, INotifyPropertyChanged
 {
-    IService Store { get; set; }
+    IStoreApi Store { get; set; }
+    IConsumerApi Consumer { get; set; }
+    IPublicApi Public { get; set; } 
     PetsViewModel PetsViewModel { get; set; }
     public string TenantName { get; set; }
 }

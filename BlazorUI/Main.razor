@@ -1,33 +1,69 @@
 ﻿@namespace BlazorUI
 @inject IJSRuntime JSRuntime
 @inject ILzHost Host
-<Router AppAssembly="@typeof(Main).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+@inject IStaticAssets staticAssets
+@inject HttpClient HttpClient
+@inject ILzClientConfig ClientConfig
+@inject IOSAccess OSAccess
+@inject IBlazorInternetConnectivity InternetConnectivity
+@inject ILzMessages Messages
+@inject NavigationManager NavigationManager
+
+@if(ClientConfig.Configured)
+{
+    <Router AppAssembly="@typeof(Main).Assembly">
+        <Found Context="routeData">
+            @if (ClientConfig.Configured)
+            {
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            }
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address. @NavigationManager.Uri</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+}
+else
+{
+    <p>Loading Config</p>
+}   
 
 @code {
     private string tenancyHostUrl = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        // setTenacyHostUrl is only available in WASM development. It is defined in the 
-        // service-worker.js file and not in the service-worker.published.js file.
-        // Note that the MAUI app does not have a service-worker.js or service-workder.published.js file.
-        // In development, we need to set the tenancyHostUrl so that tenancy resources can be loaded 
-        // from the correct host. 
-        if(Host.IsLocal && Host.IsWASM)
+        if(!ClientConfig.Configured)
         {
             try
             {
-                await JSRuntime.InvokeVoidAsync("setTenancyHostUrl", Host.TenancyUrl);
+                await JSRuntime.InvokeVoidAsync("setAssetHostUrl", Host.AssetsUrl);
+
+                // We initialize the following because the DI container doens't have access
+                // to the JSRuntime until the first render in MAUI.
+                InternetConnectivity.SetJSRuntime(JSRuntime);
+                Messages.SetStaticAssets(staticAssets);
+
+                await ClientConfig.ReadAuthConfigAsync(Host.AssetsUrl + "config");
+                try
+                {
+                    // Read message files and set the default 
+                    Messages
+                        .AddBlazorUIMessages();
+                    Messages.AssetsUrl = Host.AssetsUrl;
+                    await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
+                } catch (Exception ex)
+                {
+                    Console.WriteLine($"Messages.SetMessageSetAsync failed. {ex.Message} ");
+                } 
+                
+                Console.WriteLine("NavigationManager.BaseUri: " + NavigationManager.BaseUri);
+
+                //NavigationManager.NavigateTo("/");
+
             }
             catch(Exception ex)
             {

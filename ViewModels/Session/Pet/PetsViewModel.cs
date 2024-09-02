@@ -9,7 +9,7 @@ public class PetsViewModel : LzItemsViewModelAuthNotifications<PetViewModel, Pet
         _sessionViewModel = sessionViewModel;
         PetViewModelFactory = petViewModelFactory;
         _DTOReadListAsync = sessionViewModel.Store.ListPetsAsync;
-        SvcTestAsync = sessionViewModel.Store.TestAsync;
+        SvcTestAsync = sessionViewModel.Store.TestEmployeeAsync;
 
     }
     private ISessionViewModel _sessionViewModel;
@@ -24,6 +24,6 @@ public class PetsViewModel : LzItemsViewModelAuthNotifications<PetViewModel, Pet
         return await SvcTestAsync();
     }
 
-    public override async Task<(bool, string)> ReadAsync(bool forceload = false, StorageAPI storageAPI = StorageAPI.DTO)
-    => await base.ReadAsync(string.Empty, forceload, storageAPI);
+    public override async Task<(bool, string)> ReadAsync(bool forceload = false)
+    => await base.ReadAsync(forceload);
 }

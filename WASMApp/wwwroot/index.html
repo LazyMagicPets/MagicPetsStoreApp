@@ -8,14 +8,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <base href="/" />
+    <base href="" />
+    <!-- Do not load application component specific styles inline. Instead put them
+    in the indexhead.js script. -->
+    <script src="_content/BlazorUI/indexhead.js"></script>
+
     <link href="WASMApp.styles.css" rel="stylesheet" />
     <link href="_content/BlazorUI/manifest.json" rel="manifest" />
     <link href="_content/BlazorUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
     <!-- Do not load application component speicific styles inline. Instead put them
         in the indexhead.js script. -->
-    <script src="_content/BlazorUI/indexhead.js"></script>
 </head>
 
 <body>
@@ -26,6 +29,7 @@
         </svg>
         <div class="loading-progress-text"></div>
     </div>
+
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
@@ -35,10 +39,15 @@
     <!-- Do not load application component specific scripts inline. Instead load them
         in the indexbody.js script. -->
     <script src="_content/BlazorUI/indexbody.js"></script>
+
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>
-        navigator.serviceWorker.register('service-worker.js');
-    </script>
+
+    <!-- The indexinit.js registers the service worker. We do this to avoid
+        cors issues with inline scripts. Note that the service-worker.js is
+        different for local dev and published content. See service-worker.js
+        and service-worker-published.js. Specifically, MSBuild publish copies
+        service-worker-published.js to service-worker.js. -->
+    <script type="module" src="indexinit.js"></script>
 
 </body>
 

@@ -1,7 +1,7 @@
 {
-  "name": "Employee App",
-  "short_name": "EmployeeApp",
-  "start_url": "./",
+  "name": "Store App",
+  "short_name": "Store App",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#03173d",

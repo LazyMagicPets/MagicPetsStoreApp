@@ -9,9 +9,8 @@ namespace ViewModels;
 public class SessionsViewModel : LzSessionsViewModelAuthNotifications<ISessionViewModel>, ISessionsViewModel
 {
     public SessionsViewModel(
-        ILzMessages messages,
         ISessionViewModelFactory sessionViewModelFactory
-        )  : base(messages)
+        )  
     {
         _sessionViewModelFactory = sessionViewModelFactory;
     }
@@ -21,13 +20,7 @@ public class SessionsViewModel : LzSessionsViewModelAuthNotifications<ISessionVi
 
     public override ISessionViewModel CreateSessionViewModel()
     {
-        return _sessionViewModelFactory.Create(OSAccess, ClientConfig!, InternetConnectivity!);
+        return _sessionViewModelFactory.Create();
     }
 
-    // ReadConfigAsync is called from InitAsync() just prior to the IsInitialized being set to true.
-    public override async Task ReadConfigAsync()
-    {
-        await base.ReadConfigAsync();
-        await Messages.SetMessageSetAsync(new LzMessageSet("en-US", LzMessageUnits.Imperial));
-    }
 }

@@ -9,16 +9,22 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
 
-	<!--<Import Project="..\..\LazyStackClient\LazyStack.Config\EmbedConfig.xml" />-->
+	<!--<Import Project="..\..\LazyMagicClient\LazyMagic.Config\EmbedConfig.xml" />-->
 
 	<ItemGroup>
+		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
+		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all" />
+		<PackageReference Include="LazyMagic.Client.ModelGenerator" PrivateAssets="all" />
+		<PackageReference Include="LazyMagic.Client.ViewModels.Auth.Notifications" />
+		<PackageReference Include="LazyMagic.Shared" />
+
 		<PackageReference Include="ReactiveUI.Fody" />
 		<PackageReference Include="ReactiveUI" />
-		<PackageReference Include="LazyStack.Client.FactoryGenerator" PrivateAssets="all" />
-		<PackageReference Include="LazyStack.Client.Auth.Cognito" />
-		<PackageReference Include="LazyStack.Client.ViewModels.Auth.Notifications" />
-		<PackageReference Include="LazyStack.Shared" />
-		<PackageReference Include="LZMServiceClientSDK" />
+
+		<PackageReference Include="ConsumerApi" />
+		<PackageReference Include="StoreApi" />
+		<PackageReference Include="PublicApi" />
+
 	</ItemGroup>
 
 </Project>

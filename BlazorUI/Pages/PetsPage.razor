@@ -1,7 +1,20 @@
 ﻿@namespace BlazorUI
 @page "/PetsPage"
-@inherits LzCoreComponentBasePassViewModel<PetsViewModel>
+@inherits LzComponentBasePassViewModel<PetsViewModel>
 @inject ISessionsViewModel SessionsViewModel
+
+<style>
+    .selected {
+        background-color: #1E88E5 !important;
+    }
+    .selected > td {
+        color: white !important;
+    }
+    .selected > td .mud-input {
+        color: white !important;
+    }
+</style>
+
 <h3>PetsPage</h3>
 @if(ViewModel!.IsLoading)
 {
@@ -9,15 +22,26 @@
 }
 else
 {
-    <button @onclick="OnTest">Test</button>
-    <p>TestString: @testString</p>
-    <button @onclick="OnPetsReload">Reload</button>
-    @foreach (var pet in ViewModel!.ViewModels.Values)
-    {
-        <p>@pet.Data!.Id @pet.Data!.Name @pet.Data!.Category.Name</p>
-    }
+    <MudTable T="PetModel" Items="@ViewModel.ViewModels.Values.Select(x => x.Data)" >
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Category</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Category">@context.Category</MudTd>
+        </RowTemplate>
+
+
+    </MudTable>
+
+    <MudButton Variant="Variant.Filled" OnClick="OnPetsReload">Reload</MudButton>
+
 }
 @code {
+    private MudTable<PetModel> table = new MudTable<PetModel>();
     private string testString = string.Empty;
 
     protected override void OnInitialized()
@@ -29,6 +53,7 @@ else
     private async Task OnPetsReload()
     {
         await ViewModel!.ReadAsync();
+        ;
     }
 
     private async Task OnTest()

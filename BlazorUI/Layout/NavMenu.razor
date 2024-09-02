@@ -1,58 +1,65 @@
-﻿@*
-    This component displays very little until the ISessionsViewModel is 
-    initialized.
-*@
+﻿@namespace BlazorUI
+@inherits LzComponentBaseAssignViewModel<ISessionViewModel>  
+@inject ISessionsViewModel SessionsViewModel
+@implements IDisposable
+@inject NavigationManager NavigationManager
 
-@namespace BlazorUI
-@inherits LzCoreComponentBasePassViewModel<ISessionsViewModel>  
-
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">@AppConfig.TenantName</a>
-        <img src="_content/Tenancy/appicon.webp" alt="App Icon" style="width:40px; height:40px;" />
-        <span style="color:aliceblue">@Title</span>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-
-            @if(ViewModel!.IsInitialized)
+@if(ViewModel != null)
+{
+    <MudNavMenu>
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        @if(ViewModel!.IsSignedIn)
+        {
+            <MudNavLink Href="PetsPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Pets">Pets</MudNavLink>
+            @if (ViewModel!.IsAdmin)
             {
-                <NavLink class="nav-link" href="HomePage" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-
-                @if (ViewModel!.IsSignedIn)
-                {
-                    @if (ViewModel!.IsAdmin)
-                    {
-                        <NavLink class="nav-link" href="AdminPage" Match="NavLinkMatch.All">
-                            <span class="oi oi-home" aria-hidden="true"></span>Admin
-                        </NavLink>
-                    }
-
-                    <NavLink class="nav-link" href="PetsPage" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span>Pets
-                    </NavLink>
-                }
+                <MudNavLink Href="AdminPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AdminPanelSettings">Admin</MudNavLink>
             }
-        </div>
-    </nav>
-</div>
+        }
+    </MudNavMenu>
+} else
+{
+    <p>ViewModel is null</p>    
+}
 
 @code {
     [Parameter] public string Title { get; set; } = "";
     private bool collapseNavMenu = false;
+    private string? currentUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(0);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        ViewModel ??= SessionsViewModel.SessionViewModel;
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public new void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        base.Dispose();
     }
 } 

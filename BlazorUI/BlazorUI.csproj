@@ -9,13 +9,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\appConfig.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="wwwroot\appConfig.js" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
-		<PackageReference Include="LazyStack.Client.Auth.Cognito" />
-		<PackageReference Include="LazyStack.Blazor.Auth" />
+		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
+		<PackageReference Include="LazyMagic.Blazor.Auth" />
+		<PackageReference Include="MudBlazor" />
+
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
 
