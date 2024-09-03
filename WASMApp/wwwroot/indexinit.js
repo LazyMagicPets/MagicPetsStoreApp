@@ -23,12 +23,14 @@ window.checkIfLoaded = function () {
     return window.isLoaded;
 };
 
+const baseHrefElement = document.querySelector('base');
+const appPath = new URL(baseHrefElement.href).pathname;
+
 
 if (window.location.origin.includes("localhost")) {
     /*** APP LOADED FROM THE LOCALHOST ***/
     console.debug("Running from local development host");
     const { appConfig } = await import('./_content/BlazorUI/appConfig.js');
-
     window.appConfig = {
         appPath: appConfig.appPath,
         appUrl: window.location.origin,
@@ -56,8 +58,6 @@ if (window.location.origin.includes("localhost")) {
     // csproj file. It is difficult to set it dynamically as it is used
     // in the index.html file before we have a chance to modify it 
     // with a script.
-    const baseHrefElement = document.querySelector('base');
-    const appPath = new URL(baseHrefElement.href).pathname;
     window.appConfig = {
         appPath: appPath,
         appUrl: window.location.origin + "/",
@@ -76,5 +76,6 @@ if (window.location.origin.includes("localhost")) {
 
     // Note that the service worker activate event kicks off the asset caching process.
     navigator.serviceWorker.register('service-worker.js', { type: 'module', scope: appPath });
+  
 
 }

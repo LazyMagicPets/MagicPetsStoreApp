@@ -47,13 +47,3 @@ window.setAssetHostUrl = function (url) {
         });
     }
 }
-
-// We intercept reloads so we can redirect to the init page instead of 
-// staying on the current page.
-window.onload = function () {
-    console.log("Window loaded");
-    if (performance.navigation.type === 1) { // 1 means the page is reloaded
-        console.log("Page reload detected. Redirecting to root...");
-        window.location.href = '/'; // Redirect to the root of the application
-    }
-}
