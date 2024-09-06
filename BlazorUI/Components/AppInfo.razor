@@ -1,0 +1,38 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBaseInjectViewModel<IBaseAppJS>
+
+<MudDialog>
+    <TitleContent>
+        @Msg("storeapp_info_header")
+        @* @Msg("storeapp_info") *@
+    </TitleContent>
+    <DialogContent>
+
+        <h3>@Msg("baseapp_install_header")</h3>
+        <MudButton Color="Color.Primary" OnClick="Reload">@Msg("baseapp_refreshbtn")</MudButton>    
+        <p>@Msg("baseapp_install")</p>
+        <h3>@Msg("baseapp_aboutus_header")</h3>
+        <p>@Msg("baseapp_aboutus")</p>
+        <p>@Msg("baseapp_copyright")</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Close">@Msg("baseapp_close")</MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+
+@code {
+    [Parameter] public MarkupString AppInfoHeader { get; set; }
+    [Parameter] public MarkupString AppInfoMsg { get; set; }
+
+    private MudDialogInstance? MudDialog { get; set; }   
+
+    private async Task Reload()
+    {
+        await ViewModel!.CheckForNewAssetData();
+        await ViewModel!.Reload();
+    }
+
+    private void Close() => MudDialog!.Cancel();
+}

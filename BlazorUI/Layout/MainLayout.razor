@@ -2,16 +2,8 @@
 @inherits LzLayoutComponentBaseInjectViewModel<ISessionsViewModel>
 @inject IJSRuntime JSRuntime
 @inject ILzHost Host
-@*
-    This component instantiates the ISessionsViewModel singleton.
-    However, Maui Hybrid and WASM apps do not setup the DI context exactly the same way. 
-    In MAUI, it is necessary to pass the JSRuntime into classes that are not UI components. 
-    This is done in the Init.razor page. Once this is done, the SessionsViewModel.IsInitialized
-    property is set to true.
-
-    Any child components, like NavMenu below, must be aware of the SessionsViewModel 
-    initialization lifecycle and operate property before and after initialization. 
-*@
+@inject IBaseAppJS BaseAppJS
+@inject IDialogService DialogService
 
 @* <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/> *@
 <MudThemeProvider />
@@ -25,6 +17,7 @@
         @* <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" /> *@
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => DrawerToggle())" />
         @tenancyName Store
+        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
@@ -35,6 +28,7 @@
     <MudMainContent id="yada">
 
         <MudContainer>
+            <AppUpdates ViewModel="@BaseAppJS" />
             @Body
         </MudContainer>
     </MudMainContent>

@@ -22,6 +22,9 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
     {
         try
         {
+            var lzHostRpt = JsonConvert.SerializeObject(lzHost, new JsonSerializerSettings { Formatting = Formatting.Indented });   
+            Console.WriteLine(lzHostRpt);
+
             var tenantKey = (string?)clientConfig.TenantKey ?? throw new Exception("Cognito AuthConfig.tenantKey is null");
 
             var securityLevelStr = (string?)clientConfig.AuthConfigs?["EmployeeAuth"]?["userPoolSecurityLevel"] ?? throw new Exception("Cognito AuthConfig.securityLevel is null");

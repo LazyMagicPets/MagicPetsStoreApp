@@ -1,0 +1,47 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBasePassViewModel<ILzSessionViewModel>
+@inject ILzMessages LzMessages
+
+
+@if (ViewModel is not null)
+{
+	<Div Flex="Flex.Row" Style="max-height: 30px;">
+		<Buttons>
+			<Button Clicked="SetToImperial" Color="@englishColor" Size="Blazorise.Size.Small">ft<sup>2</sup></Button>
+			<Button Clicked="SetToMetric" Color="@imperialColor" Size="Blazorise.Size.Small">m<sup>2</sup></Button>
+		</Buttons>
+	</Div>
+}
+
+@code {
+	[Parameter]
+	public EventCallback UnitsChanged { get; set; }	
+
+	private Color imperialColor => (ViewModel!.MessageSetSelector.Units == LzMessageUnits.Metric) ? Color.Warning : Color.Secondary;
+	private Color englishColor => (ViewModel!.MessageSetSelector.Units == LzMessageUnits.Imperial) ? Color.Warning : Color.Secondary;
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (ViewModel is null) return;
+		await base.OnInitializedAsync();
+	}
+
+	private async Task SetToImperial()
+	{
+		if (ViewModel is null) return;
+		ViewModel.MessageSetSelector = new LzMessageSetSelector(ViewModel.MessageSetSelector.Culture, LzMessageUnits.Imperial);
+		await LzMessages.SetMessageSetAsync(ViewModel!.MessageSetSelector.Culture, LzMessageUnits.Imperial);
+		LzMessages.Refresh();
+		await UnitsChanged.InvokeAsync();
+	}
+
+	private async Task SetToMetric()
+	{
+		if (ViewModel is null) return;
+		ViewModel.MessageSetSelector = new LzMessageSetSelector(ViewModel.MessageSetSelector.Culture, LzMessageUnits.Metric);
+		await LzMessages.SetMessageSetAsync(ViewModel!.MessageSetSelector.Culture, LzMessageUnits.Metric);
+		LzMessages.Refresh();
+		await UnitsChanged.InvokeAsync();
+	}
+}

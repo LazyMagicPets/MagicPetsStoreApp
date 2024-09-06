@@ -16,7 +16,7 @@ public static class ConfigureBlazorUI
     public static ILzMessages AddBlazorUIMessages(this ILzMessages lzMessages)
     {
         List<string> messages = [
-            "Assets/System/AuthComponentMessages.json"
+            "Assets/{culture}/System/AuthMessages.json"
             ];
         lzMessages.MessageFiles.AddRange(messages);
         return lzMessages;

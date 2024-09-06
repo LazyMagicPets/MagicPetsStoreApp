@@ -1,0 +1,51 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBasePassViewModel<ILzSessionViewModel>
+
+
+@if (ViewModel is not null)
+{
+	<MudSelect @bind-Value="culture">
+		@foreach(var culture in Messages!.Cultures)
+        {
+			<MudSelectItem @onclick="@(() => OnSelectLanguage(culture.culture, culture.name))" Value="@culture.culture">@culture.name</MudSelectItem>
+        }
+	</MudSelect>
+}
+
+@code {
+	private string currentLanguage = "English (United States)";
+	private string? culture;
+
+	protected override void OnInitialized()
+	{
+		culture = Messages?.Culture;
+		base.OnInitialized();
+	}
+
+
+	private async void OnSelectLanguage(string language, string displayName)
+	{
+		if (language != "en-US")
+			await SetToMetric(language);
+		else
+			await SetToImperial(language);
+
+		currentLanguage = displayName;
+	}
+
+	private async Task SetToImperial(string language)
+	{
+		if (ViewModel is null) return;
+		ViewModel.MessageSetSelector = new LzMessageSetSelector(language, LzMessageUnits.Imperial);
+		await Messages!.SetMessageSetAsync(language, LzMessageUnits.Imperial);
+		Messages!.Refresh();
+	}
+
+	private async Task SetToMetric(string language)
+	{
+		if (ViewModel is null) return;
+		ViewModel.MessageSetSelector = new LzMessageSetSelector(language, LzMessageUnits.Metric);
+		await Messages!.SetMessageSetAsync(language, LzMessageUnits.Metric);
+		Messages!.Refresh();
+	}
+}

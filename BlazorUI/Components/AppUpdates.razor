@@ -1,0 +1,57 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBasePassViewModel<IBaseAppJS>
+
+<div class="modal-overlay @(IsModalVisible ? "active" : "")" @onclick:preventDefault @onclick:stopPropagation></div>
+
+<MudDialog Visible="updatingServiceModalVisible" > 
+    <TitleContent>
+        @Msg("baseapp_updatingapplication")
+    </TitleContent>
+    <DialogContent>
+        @Msg("baseapp_updatingapplicationmsg")
+    </DialogContent>
+</MudDialog>
+
+<MudDialog Visible="updatingAssetDataModalVisible">
+    <TitleContent>
+        @Msg("baseapp_updatingassetdata")
+    </TitleContent>
+    <DialogContent>
+        @Msg("baseapp_updatingassetmsg")
+    </DialogContent>
+</MudDialog>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        z-index: 100000;
+        display: none;
+        cursor: not-allowed;
+    }
+
+    .modal-overlay.active {
+        display: block;
+    }
+
+</style>
+
+@code {
+    // App Update
+    private bool upaatingServiceWroker => ViewModel!.UpdatingServiceWorker;
+
+    private bool updatingServiceModalVisible => ViewModel!.UpdatingServiceWorker;
+
+    // Static Asset Update
+    private bool checkingAssetData => ViewModel!.CheckingAssetData;
+    private bool updatingAssetData => ViewModel!.UpdatingAssetData;
+
+    private bool updatingAssetDataModalVisible => ViewModel!.UpdatingAssetData && !ViewModel!.UpdatingServiceWorker;
+
+    // Checks to see if modal is currently up
+    private bool IsModalVisible => updatingServiceModalVisible || updatingAssetDataModalVisible;
+}

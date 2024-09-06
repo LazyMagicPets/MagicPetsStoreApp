@@ -62,7 +62,7 @@ if (window.location.origin.includes("localhost")) {
         appPath: appPath,
         appUrl: window.location.origin + "/",
         androidAppUrl: "",
-        remoteApiUrl: window.location.orgin + "/",
+        remoteApiUrl: window.location.origin + "/",
         localhostApiUrl: "",
         assetsUrl: window.location.origin + "/",
         wsUrl: window.location.origin.replace(/^http/, 'ws') + "/"
