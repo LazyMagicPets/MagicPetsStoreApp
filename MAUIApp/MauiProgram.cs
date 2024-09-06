@@ -55,6 +55,7 @@ public static class MauiProgram
                 isLocal: isLocal,
                 useLocalhostApi: (bool)_appConfig!["useLocalHostApi"]!))
             .AddSingleton<IOSAccess, BlazorOSAccess>()
+            .AddSingleton<IBaseAppJS, BaseAppJS>()
             .AddMauiBlazorWebView();
 
 #if DEBUG

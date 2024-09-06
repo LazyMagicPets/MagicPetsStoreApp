@@ -48,6 +48,7 @@ else
                 InternetConnectivity.SetJSRuntime(JSRuntime);
                 Messages.SetStaticAssets(staticAssets);
                 BaseAppJS.SetJSRuntime(JSRuntime);
+                await BaseAppJS.Initialize();
 
                 await ClientConfig.ReadAuthConfigAsync(Host.AssetsUrl + "config");
                 try
