@@ -6,7 +6,7 @@ public class BaseAppJS : LzBaseJSModule, IBaseAppJS
 {
     private DotNetObjectReference<BaseAppJS> viewerInstance;
     // ModuleFileName is the path to the JS file that will be loaded by the Blazor app.
-    public override string ModuleFileName => $"./_content/BaseApp.BlazorUI/baseapp.js";
+    public override string ModuleFileName => $"./_content/BlazorUI/baseapp.js";
 
     
     private bool _checkingAssetData;

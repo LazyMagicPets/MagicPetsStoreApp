@@ -7,6 +7,7 @@
 @inject IOSAccess OSAccess
 @inject IBlazorInternetConnectivity InternetConnectivity
 @inject ILzMessages Messages
+@inject IBaseAppJS BaseAppJS    
 @inject NavigationManager NavigationManager
 
 @if(ClientConfig.Configured)
@@ -46,6 +47,7 @@ else
                 // to the JSRuntime until the first render in MAUI.
                 InternetConnectivity.SetJSRuntime(JSRuntime);
                 Messages.SetStaticAssets(staticAssets);
+                BaseAppJS.SetJSRuntime(JSRuntime);
 
                 await ClientConfig.ReadAuthConfigAsync(Host.AssetsUrl + "config");
                 try

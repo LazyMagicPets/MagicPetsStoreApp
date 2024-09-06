@@ -10,7 +10,7 @@ import * as staticContentModule from './_content/BlazorUI/staticContentModule.js
 import * as appConfigFile from './_content/BlazorUI/appConfig.js'; // appConfig
 const appPrefix = appConfigFile.appConfig.appPath;
 
-const swversion = 47;
+const swversion = 48;
 console.log("service-worker.js loading version:" + swversion);
 
 let version = '';

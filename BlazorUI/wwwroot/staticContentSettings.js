@@ -6,7 +6,7 @@ export default {
         { "/Assets/es-MX/System/": "LazyCache" },
 
         // StoreApp
-        { "Assets/base/StoreApp/": "PreCache" },
+        { "/Assets/base/StoreApp/": "PreCache" },
         { "/Assets/en-US/StoreApp/": "PreCache" },
         { "/Assets/es-MX/StoreApp/": "LazyCache" },
 
