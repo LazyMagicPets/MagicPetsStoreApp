@@ -13,9 +13,9 @@
 		<PackageVersion Include="LazyMagic.Blazor.Auth" Version="0.9.0" />
 		<PackageVersion Include="LazyMagic.Shared" Version="0.9.0" />
 		
-		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.6" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.6" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.1.2" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.1.2" />

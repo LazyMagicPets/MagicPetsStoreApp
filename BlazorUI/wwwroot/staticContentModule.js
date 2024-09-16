@@ -10,8 +10,8 @@
 console.log("Starting to initialize staticContentModule");
 export let assetCaches = {}; // Dictionary of static assets data where key is a tdurl and value is { version: "" }
 
-import settings from '../../_content/BlazorUI/staticContentSettings.js';
-import * as appConfigFile from '../../_content/BlazorUI/appConfig.js'; // appConfig
+import settings from './_content/BlazorUI/staticContentSettings.js';
+import * as appConfigFile from './_content/BlazorUI/appConfig.js'; // appConfig
 const appPrefix = appConfigFile.appConfig.appPath;
 
 const TEMP_APP_CACHE_NAME = `temp-${appPrefix}-app-cache`;
@@ -41,7 +41,7 @@ export async function cacheApplicationAssets(assetsRequests) {
  */
 export async function activateApplicationCache() {
     await copyCache(TEMP_APP_CACHE_NAME, APP_CACHE_NAME);
-}   
+}
 
 /**
  * Get the current assets cache, if any, for the given URL.
@@ -51,7 +51,7 @@ export async function activateApplicationCache() {
  * @returns null or a cache name
  */
 export async function getCacheName(url) {
-    let cacheName = null;   
+    let cacheName = null;
     for (const tdurl of Object.keys(assetCaches)) {
         if (url.includes(tdurl)) {
             cacheName = tdurl; // assets cache
@@ -128,7 +128,7 @@ export async function loadCache(cacheRequests, cacheName) {
             failureCount++;
         }
     }
-    console.debug(`Loaded ${cacheName } cached: ${successCount} failed: ${failureCount}`);
+    console.debug(`Loaded ${cacheName} cached: ${successCount} failed: ${failureCount}`);
 }
 /*
  * Fetches caches of type PreCache.
@@ -156,13 +156,14 @@ export async function readAssetCachesByType(cacheType) {
 export async function readAssetsCache(cacheName) {
     try {
         // Read the asset cache version
-        const version = await readAssetsCacheVersionNoCache(cacheName); // the version on the server
+        //console.log(`Reading cache ${cacheName}`);
         const currentVersion = await readAssetsCacheVersionCached(cacheName); // the version currently in the cache
+        const version = await readAssetsCacheVersionNoCache(cacheName); // the version on the server
         assetCaches[cacheName].version = currentVersion;  // set the current version for use by the lazyLoadAssetCache function
-        if(currentVersion === version) return; // nothing to do
+        if (currentVersion === version) return; // nothing to do
 
         let assetsManifestResponse;
-        try { assetsManifestResponse = await fetch(new Request(cacheName + "assets-manifest.json", {cache: 'no-cache'})); }
+        try { assetsManifestResponse = await fetch(new Request(cacheName + "assets-manifest.json", { cache: 'no-cache' })); }
         catch { throw new Error(`fetching ${cacheName}assets-manifest.json for version: ${version}`); }
 
         if (assetsManifestResponse.ok) {
@@ -179,7 +180,7 @@ export async function readAssetsCache(cacheName) {
                     //console.log(`asset.url: ${asset.url}, url: ${url}`);
                     return new Request(url, { cache: 'no-cache' });
                 });
-                // The version.json file is not in the assets-manifest.json file because its value is calculated based on the
+                // The version is not in the assets-manifest.json file because its value is calculated based on the
                 // content of the assets-manifest.json file. We need to add it to the list of requests so we have a persisent
                 // record of the version of the cache.
                 const versionJsonRequest = new Request(new URL(cacheName + "version.json", assetsUrl).href, { cache: 'no-cache' });
@@ -204,19 +205,11 @@ export async function readAssetsCacheVersionCached(cacheName) {
         const url = new URL(cacheName + 'version.json', assetsUrl);
         const request = new Request(url);
         const cache = await caches.open(cacheName);
-        const isInCache = cache ? await cache.match(request) : false;
-        if (!isInCache) return "";
-
-        let versionResponse = await fetch(url, {
-            method: 'GET'
-        });
-        if (versionResponse.ok) { 
-            let versionObj = await versionResponse.json();
-            let version = versionObj.version;
-            //console.debug(`Asset cache ${cacheName} version: ${version}`);
-            return version;
-        }
-        return "";
+        const response = await cache.match(request);
+        if (!response) return "";
+        let versionObj = await response.json();
+        let version = versionObj.version;
+        return version;
 
     } catch (error) {
         console.error(`Error reading asset cache version from cache: ${cacheName}`, error);
@@ -227,11 +220,12 @@ export async function readAssetsCacheVersionCached(cacheName) {
  * Reads the version of an asset cache from the server
  * @param {string} cacheName - The URL of the asset cache.
  */
-export async function readAssetsCacheVersionNoCache(cacheName) { 
+export async function readAssetsCacheVersionNoCache(cacheName) {
     try {
         // NOTE: In a service worker, this fetch will circument the fetch event handler,
         // On the UI thread, this fetch will be intercepted by the window.fetch override.
         const url = new URL(cacheName + "version.json", assetsUrl).href;
+        //console.log(`Reading asset cache version from server: ${cacheName} url: ${url}`);
         let versionResponse = await fetch(url, {
             method: 'GET',
             cache: 'no-cache' // Ignore the local cache and go to the server
@@ -257,7 +251,7 @@ export async function checkAssetCaches() {
     try {
         await sendMessage('AssetDataCheckStarted', 'Checking assets data cache.');
         for (const cacheName of Object.keys(assetCaches)) {
-                await readAssetsCache(cacheName);
+            await readAssetsCache(cacheName);
         }
         await sendMessage('AssetDataCheckComplete', 'Assets data cache check complete.')
     } catch (error) {
@@ -315,6 +309,7 @@ function makeAssetCaches() {
                 version: ""
             };
         }
+        console.log("AssetCaches dictionary created: ", JSON.stringify(assetCaches));
     } catch (error) {
         console.error(`Error creating AssetCaches dictionary `, error);
     }
