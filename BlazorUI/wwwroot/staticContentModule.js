@@ -10,8 +10,8 @@
 console.log("Starting to initialize staticContentModule");
 export let assetCaches = {}; // Dictionary of static assets data where key is a tdurl and value is { version: "" }
 
-import settings from './_content/BlazorUI/staticContentSettings.js';
-import * as appConfigFile from './_content/BlazorUI/appConfig.js'; // appConfig
+import settings from './staticContentSettings.js';
+import * as appConfigFile from './appConfig.js'; // appConfig
 const appPrefix = appConfigFile.appConfig.appPath;
 
 const TEMP_APP_CACHE_NAME = `temp-${appPrefix}-app-cache`;
@@ -302,13 +302,14 @@ function makeAssetCaches() {
         console.debug("makeAssetCaches(), Creating AssetCaches dictionary");
         if (Object.keys(assetCaches).length > 0) return;
         //const _appPrefix = appPrefix.endsWith('/') ? appPrefix.slice(0,-1) : appPrefix;
-        for (const cacheName of settings.staticAssets) {
-            const [key, value] = Object.entries(cacheName)[0];
-            assetCaches[key] = {
-                cacheType: value,
-                version: ""
-            };
-        }
+        if (settings.staticAssets)
+            for (const cacheName of settings.staticAssets) {
+                const [key, value] = Object.entries(cacheName)[0];
+                assetCaches[key] = {
+                    cacheType: value,
+                    version: ""
+                };
+            }
         console.log("AssetCaches dictionary created: ", JSON.stringify(assetCaches));
     } catch (error) {
         console.error(`Error creating AssetCaches dictionary `, error);

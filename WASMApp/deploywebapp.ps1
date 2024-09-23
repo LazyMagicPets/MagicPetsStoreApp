@@ -6,6 +6,8 @@
 # work, this guid should be provided to you by the back end team. If you are doing back end work,
 # then review the Service project AWSTemplates folder for more information.
 
+param([string]$AppName="storeapp",[string]$Guid)
+
 Import-Module powershell-yaml
 
 # Load configuration from YAML file
@@ -19,7 +21,13 @@ if(-not (Test-Path $filePath))
 
 $config = Get-Content -Path $filePath | ConvertFrom-Yaml
 $SystemGuid = $config.SystemGuid
+if(-not $Guid.HasValue) {
+	$Guid = $SystemGuid
+}
+$SystemName = $config.SystemName
 $awsProfile = $config.Profile
+$bucketName = "$SystemName-webapp-$AppName-$SystemGuid"
+
 
 dotnet publish -p:Publishprofile=FolderProfile
 
@@ -27,7 +35,6 @@ dotnet publish -p:Publishprofile=FolderProfile
 
 # Parameters
 $localFolderPath = ".\bin\Release\net8.0\publish\wwwroot"
-$s3BucketName = "app-store-$SystemGuid"
 $s3KeyPrefix = "wwwroot"
 
 # Ensure local folder path is absolute
@@ -55,7 +62,7 @@ catch {
 }
 
 # Perform the sync operation
-$syncCommand = "aws s3 sync `"$localFolderPath`" `"s3://$s3BucketName/$s3KeyPrefix`" --delete --profile `"$awsProfile`""
+$syncCommand = "aws s3 sync `"$localFolderPath`" `"s3://$bucketName/$s3KeyPrefix`" --delete --profile `"$awsProfile`""
 Write-Host "Running sync command: $syncCommand"
 
 try {
