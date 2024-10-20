@@ -10,7 +10,7 @@ import * as staticContentModule from './_content/BlazorUI/staticContentModule.js
 import * as appConfigFile from './_content/BlazorUI/appConfig.js'; // appConfig
 const appPrefix = appConfigFile.appConfig.appPath;
 
-const swversion = 49;
+const swversion = 51;
 console.log("service-worker.js loading version:" + swversion);
 
 let version = '';
@@ -27,14 +27,16 @@ async function sendMessage(action, info) {
     }
 }
 
-const offlineAssetsInclude = [/\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/, /\.svg$/];
-const offlineAssetsExclude = [/^service-worker\.js$/, /GoogleTag\.js$/]; // Excluding GoogleTag.js because ad blockers block it and this will cause the caching to fail.
+//const offlineAssetsInclude = [/\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/, /\.svg$/];
+const offlineAssetsInclude = [/\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/, /\.svg$/];
+const offlineAssetsExclude = [/GoogleTag\.js$/]; // Excluding GoogleTag.js because ad blockers block it and this will cause the caching to fail.
 
 self.addEventListener('message', async event => {
     switch (event.data.action) {
         case 'checkForNewAssetData':
             console.log('service worker checkForNewAssetData.');
             await sendMessage('AssetDataCheckStarted', "");
+            await staticContentModule.checkAssetCaches();
             break;
         case 'loadStaticAssets':
             console.log('service worker loadStaticAssets.');
@@ -112,44 +114,69 @@ self.addEventListener('activate', (event) => {
     event.waitUntil((async () => {
         await staticContentModule.activateApplicationCache();
         await self.clients.claim();
-        await staticContentModule.readAssetCachesByType("PreCache");
+        // await staticContentModule.readAssetCachesByType("PreCache");
+        await staticContentModule.checkAssetCaches();
         await sendMessage("ServiceWorkerUpdateCompleted", "The new version has been installed.");
     })());
 });
 
 self.addEventListener('fetch', event => {
     event.respondWith((async () => {
+        const url = new URL(event.request.url);
+        const path = url.pathname;
+        const isOnline = navigator.isOnline;
+        const request = event.request;
 
         // Redirect to the base URL if the app is navigated to a different URL
-        if (event.request.mode === 'navigate') {
-            const url = new URL(event.request.url);
-            const redirectUrl = new URL(appPrefix, self.location.origin);
-            if (url.pathname !== redirectUrl.pathname) {
-                console.log(`Redirecting from ${url.pathname} to ${redirectUrl.pathname}`);
-                return Response.redirect(redirectUrl.href, 302);
+        // Note that this doesn't handle hard relaods as these bypass the service worker.
+        // You must handle hard reloads on the server side.
+        // The following code breaks the PWA. When the app is run, it doesn't load
+        // and when we inspect appInfo it says the domain is insecure.
+        if (request.mode === 'navigate') {
+            // Blazor navigation detected - ignore
+            // We don't want to fetch when all we are doing is updating the URL for an internal Blazor navigation.
+            // e.g. when we route to a different "page" (really just a Blazor component) in the SPA.
+            // Note: It is important to not return the null, 204 response when the paht is the appPrefix
+            // as this will break the PWA. The PWA will not load and the appInfo will say the domain is insecure.
+            if (path !== appPrefix) {
+                console.log('Blazor navigation detected', url);
+                return new Response(null, { status: 204, statusText: 'no content' });
             }
         }
 
-        if (event.request.method === 'GET' && event.request.cache !== "no-cache") {
+        if (request.method === 'GET' && request.cache !== "no-cache") {
             try {
-                // examine the request path and determin if this may be a cached asset
-                const cacheName = await staticContentModule.getCacheName(event.request.url);
+                // examine the request path and determine if this may be a cached asset
+                const cacheName = await staticContentModule.getCacheName(request.url);
                 if (cacheName) {
                     const cacheStatus = await checkCacheStatus();
                     if (cacheStatus) {
                         await staticContentModule.lazyLoadAssetCache(cacheName);
-                        const cachedResponse = await staticContentModule.getCachedResponse(cacheName, event.request);
+                        const cachedResponse = await staticContentModule.getCachedResponse(cacheName, request);
                         if (cachedResponse instanceof Response) {
                             return cachedResponse;
                         } else {
                             // Item is not in cache so just fetch it. We don't add it to the cache here because of
                             // thread safety issues. This is not a performance issue becuase the browser's native
                             // cache will have the item, for the cache load to use, when the cache load catches up.
-                            return fetch(event.request);
+                            return fetch(request)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        //throw new Error(`HTTP error! status: ${response.status}`);
+                                        console.error('Fetch error:', response.url);
+                                        return new Response(null, { status: 204, statusText: 'no content' });
+                                    }
+                                    return response;
+                                })
+                                .catch(error => {
+                                    console.error('Fetch error:', response.url, error);
+                                    return new Response(null, { status: 204, statusText: 'no content' });
+                                    //return new Response('Fetch error occurred', { status: 500 });
+                                })
                         }
                     }
                     else {
-                        console.warn('No caches found when processing:' + event.request.url);
+                        console.warn('No caches found when processing:' + request.url);
                     }
                 }
             }
@@ -159,7 +186,20 @@ self.addEventListener('fetch', event => {
             }
         }
         // we don't need await on the fetch because it returns a promise
-        return fetch(event.request);
+        return fetch(request)
+            .then(response => {
+                if (!response.ok) {
+                    // throw new Error(`HTTP error! status: ${response.status}`);
+                    console.error('Fetch error:', response.url);
+                    return new Response(null, { status: 204, statusText: 'no content' });
+                }
+                return response;
+            })
+            .catch(error => {
+                console.error('Fetch error:', response.url, error);
+                return new Response(null, { status: 204, statusText: 'no content' });
+                //return new Response('Fetch error occurred', { status: 500 });
+            })
     })()
     );
 });

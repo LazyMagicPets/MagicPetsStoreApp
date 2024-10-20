@@ -1,18 +1,19 @@
 export default {
     staticAssets: [
         // System
-        { "/System/base/System/": "PreCache" },
-        { "/System/en-US/System/": "PreCache" },
-        { "/System/es-MX/System/": "LazyCache" },
+        { "system/base/System/": "PreCache" },
+        { "system/en-US/System/": "PreCache" },
+        { "system/es-MX/System/": "LazyCache" },
 
         // StoreApp
-        { "/System/base/StoreApp/": "PreCache" },
-        { "/System/en-US/StoreApp/": "PreCache" },
-        { "/System/es-MX/StoreApp/": "LazyCache" },
+        { "system/base/StoreApp/": "PreCache" },
+        { "system/en-US/StoreApp/": "PreCache" },
+        { "system/es-MX/StoreApp/": "LazyCache" },
 
         // Tenancy
-        { "/Tenancy/base/StoreApp/": "PreCache" },
-        { "/Tenancy/en-US/StoreApp/": "PreCache" },
-        { "/Tenancy/es-MX/StoreApp/": "LazyCache" },
+        { "tenancy/base/System/": "PreCache" },
+        { "tenancy/base/StoreApp/": "PreCache" },
+        { "tenancy/en-US/StoreApp/": "PreCache" },
+        { "tenancy/es-MX/StoreApp/": "LazyCache" },
     ]
 };

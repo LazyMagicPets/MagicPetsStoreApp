@@ -10,8 +10,8 @@
 console.log("Starting to initialize staticContentModule");
 export let assetCaches = {}; // Dictionary of static assets data where key is a tdurl and value is { version: "" }
 
-import settings from './staticContentSettings.js';
-import * as appConfigFile from './appConfig.js'; // appConfig
+import settings from '../../_content/BlazorUI/staticContentSettings.js';
+import * as appConfigFile from '../../_content/BlazorUI/appConfig.js'; // appConfig
 const appPrefix = appConfigFile.appConfig.appPath;
 
 const TEMP_APP_CACHE_NAME = `temp-${appPrefix}-app-cache`;
@@ -230,11 +230,22 @@ export async function readAssetsCacheVersionNoCache(cacheName) {
             method: 'GET',
             cache: 'no-cache' // Ignore the local cache and go to the server
         });
+        //.then(response => {
+        //    if (!response.ok)
+        //        return new Response(null, { status: 404, statusText: 'not found' });
+        //    return response;
+        //})
+        //.catch(error => {
+        //    return new Response(null, { status: 404, statusText: 'not found' });
+        //});
+        if (!versionResponse.ok)
+            return "";
         let versionObj = await versionResponse.json();
         let version = versionObj.version;
         return version;
 
     } catch (error) {
+        // This should never fire. 
         console.error(`Error reading asset cache version: ${cacheName}`, error);
     }
 }

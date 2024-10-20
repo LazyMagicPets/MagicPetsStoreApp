@@ -9,11 +9,9 @@ document.head.appendChild(metaCharset);
 
 // Link tags
 var links = [
+    { href: '/system/base/System/favicon.png', rel: 'icon', type: 'image/png' },
     { href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap', rel: 'stylesheet' },
-    { href: '_content/MudBlazor/MudBlazor.min.css', rel: 'stylesheet' },
-    { href: '_content/BlazorUI/favicon.png', rel: 'icon', type: 'image/png' },
-    { href: '_content/BlazorUI/icon-512.png', rel: 'apple-touch-icon', sizes: '512x512' },
-    { href: '_content/BlazorUI/icon-192.png', rel: 'apple-touch-icon', sizes: '192x192' }
+    { href: '_content/MudBlazor/MudBlazor.min.css', rel: 'stylesheet' }
 ];
 
 links.forEach(function (linkInfo) {

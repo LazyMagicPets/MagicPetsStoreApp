@@ -6,6 +6,8 @@
 <html lang="en">
 
 <head>
+    <!-- We use no-cache because we implement our own caching strategy for all assets. -->
+    <meta http-equiv="Cache-Control" content="no-cache">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <base href="" />
@@ -22,6 +24,7 @@
 </head>
 
 <body>
+    <div class="status-bar-safe-area"></div>
     <div id="main">
         <svg class="loading-progress">
             <circle r="40%" cx="50%" cy="50%" />

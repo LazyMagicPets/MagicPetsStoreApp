@@ -1,19 +1,20 @@
 {
   "name": "Store App",
   "short_name": "Store App",
-  "start_url": "./index.html",
+  "id": "/store/",
+  "start_url": "/store/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#03173d",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "/system/base/System/icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "icon-192.png",
+      "src": "/system/base/System/icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     }
