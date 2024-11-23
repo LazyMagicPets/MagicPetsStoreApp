@@ -1,7 +1,6 @@
-using LazyMagic.Blazor;
-using ViewModels;
-using Microsoft.JSInterop;
-using Newtonsoft.Json.Linq;
+
+using LazyMagic.Client.ViewModels;
+using ReactiveUI.Blazor;
 
 
 namespace WASMApp;
@@ -46,10 +45,17 @@ public partial class Program
                 break;
         }
 
+        // Configure logging
+        builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug); // Set minimum log level
+        builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);  // Only show Warning and above for ASP.NET Core
+        builder.Logging.AddFilter("MudBlazor", LogLevel.Warning);  // Only show Warning and above for MudBlazor
 
         builder.Services
+        
         .AddSingleton(sp => new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) })
-        .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
+        .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(
+            sp.GetRequiredService<ILoggerFactory>(), 
+            new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
         .AddSingleton<ILzMessages, LzMessages>()
         .AddSingleton<ILzClientConfig, LzClientConfig>()
         .AddSingleton<BlazorInternetConnectivity>()
@@ -70,7 +76,9 @@ public partial class Program
         .AddSingleton<IBaseAppJS, BaseAppJS>()
         .AddBlazorUI(); // See Config/ConfigureViewModels.cs
 
+
         var host = builder.Build();
+
 
         // Wait for the page to fully load to finish up the Blazor app configuration
         var jsRuntime = host.Services.GetRequiredService<IJSRuntime>();

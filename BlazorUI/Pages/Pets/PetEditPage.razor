@@ -1,0 +1,143 @@
+﻿@namespace BlazorUI
+@page "/PetEditPage"
+@inherits LzComponentBaseAssignViewModel<PetViewModel>
+@inject ISessionsViewModel SessionsViewModel 
+@inject NavigationManager NavigationManager
+@inject ILoggerFactory LoggerFactory
+
+<h3>PetPage</h3>
+
+@using FluentValidation
+
+<MudCard>
+    <MudForm ViewModel="@model" @ref="@form" Validation="@(petModelValidator.ValidateValue)" ValidationDelay="0">
+        <MudCardContent>
+            <MudTextField 
+                @bind-Value="model.Name"
+                For="@(() => model.Name)"
+                Immediate="true"
+                Label="Name" />
+        </MudCardContent>
+    </MudForm>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await SaveEditAsync())">@AddOrUpdateText </MudButton>
+        @if(ViewModel!.State != LzItemViewModelState.Edit) {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await DeleteAsync())">Delete</MudButton>
+        }
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await CancelAsync())">Cancel</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Inject] ISnackbar? Snackbar { get; set; }
+
+    private MudForm? form;
+    private PetModel model => ViewModel!.Data!;
+    private LocalPetModelValidator petModelValidator = new LocalPetModelValidator();
+    private EditContext? editContext;
+    private PetsViewModel? petsViewModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        petsViewModel = SessionsViewModel!.SessionViewModel!.PetsViewModel!; 
+        ViewModel = petsViewModel!.EditViewModel!;  // EditViewModel should be assigned in the PetsViewModel if we are editing an existing item.
+        if(ViewModel == null) {
+            // Create a new PetViewModel if the PetssViewModel didn't
+            var pet = new SharedSchema.Pet();
+            pet.Id = Guid.NewGuid().ToString(); // You can skip assignment of the Id if it gets assigned by the server
+            pet.Name = ""; // null value is not allowed
+            ViewModel = new PetViewModel(LoggerFactory, SessionsViewModel!.SessionViewModel, petsViewModel, pet);
+            ViewModel.State = LzItemViewModelState.New;
+        }
+        var (success, msg) = await ViewModel.OpenEditAsync(); // copies the existing data so cancel can restore it
+        if(!success) {
+            Snackbar!.Add(msg, MudBlazor.Severity.Error);
+            NavigationManager.NavigateTo("PetsPage");
+        }
+        editContext = new EditContext(ViewModel!.Data!);
+        await base.OnInitializedAsync();
+    }
+
+    private string AddOrUpdateText => ViewModel!.State == LzItemViewModelState.New ? "Add" : "Update";
+
+    // Introduction to LzItemViewModel<TModel>
+    // PetViewModel is derived from LzItemViewModel<PetModel>
+    // As such, edit management methods and a State property are provided in the base class:
+    // State property: New, Edit, Current, Deleted
+    // - OpenEditAsync() - copies the existing data so cancel can restore it, State = Edit or State = New
+    // - SaveEditAsync() - saves the data to the server, State = Current
+    // - DeleteAsync() - deletes the data from the server, State = Deleted
+    // - CancelEditAsync() - restores the data to its original state, State = Current
+    // If a ItemsViewModel owns this item, the base class makes these 
+    // callbacks to it: ItemAddded(), ItemUpdated(), ItemDeleted(), ItemCancelled()
+    // Since the base class provides a complete set of edit management methods, it 
+    // is a good idea to review the class to see if it meets your needs and use it 
+    // consistently across your application if it does. Remember that a Blazor component 
+    // should focus on the UI and not contain business logic. The ViewModel should handle 
+    // business logic. While managing the edit state of an item is at the intersection of UI 
+    // and business logic, it is preferable to imiplement this logic in the ViewModel to allow 
+    // headless testing of the create/update/delete process.
+
+    private async Task CancelAsync()
+    {
+        var (success, msg) = await ViewModel!.CancelEditAsync();
+        if(!success)
+            Snackbar!.Add(msg, MudBlazor.Severity.Error);
+
+        NavigationManager.NavigateTo("PetsPage");
+    }
+
+    private async Task SaveEditAsync()
+    {
+        await form!.Validate();
+
+        if(!form.IsValid)
+            return;
+
+        var (success, msg) = await ViewModel!.SaveEditAsync();
+        if(!success)
+            Snackbar!.Add(msg, MudBlazor.Severity.Error);
+        else 
+            NavigationManager.NavigateTo("PetsPage");
+    }
+
+    private async Task DeleteAsync()
+    {
+        var (success, msg) = await ViewModel!.DeleteAsync(ViewModel.Id);
+        if(!success)
+            Snackbar!.Add(msg, MudBlazor.Severity.Error);
+
+        NavigationManager.NavigateTo("PetsPage");
+    }
+
+    // A local validator class that extends the validator generated by LazyMagic and 
+    // possibly extended in the ClientSDK code. The ClientSDK provides two validator 
+    // classes, one for the DTO, and one for the Model. This local validator 
+    // applies the validations defined in the ClientSDK and adds any additional
+    // validations required for the ws. It also implements the ValidateValue 
+    // method required by MudBlazor. So, you may have three levels of validation:
+    // 1. DTO level validation in the ClientSDK - validates the DTO is suitable for transfer
+    // 2. Model level validation in the ClientSDK - generally applicable business domain validation 
+    // 3. Local validation in the BlazorUI project - ws specific validation
+    partial class LocalPetModelValidator : PetModelValidator  {
+
+        // CustomValidation called from PetModelValidator constructor
+        void CustomValidate()
+        {
+            // Add ws side validation here
+            RuleFor(x => x.Name)
+                .NotEmpty()
+                .Length(1, 100);
+        }
+
+        // Extend class with validation result required for MudBlazor
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<PetModel>.CreateWithOptions((PetModel)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+}
+

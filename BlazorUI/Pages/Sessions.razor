@@ -29,7 +29,7 @@
                 try
                 {
                     isBusy = true;
-                    await ViewModel.CreateSessionAsync();
+                    await ViewModel.CreateSessionAsync(); 
                     ViewModel!.SessionViewModel!.AuthProcess.SetSignUpAllowed(true);
                 }
                 catch (Exception ex)

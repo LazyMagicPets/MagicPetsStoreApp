@@ -9,8 +9,9 @@ namespace ViewModels;
 public class SessionsViewModel : LzSessionsViewModelAuthNotifications<ISessionViewModel>, ISessionsViewModel
 {
     public SessionsViewModel(
+        ILoggerFactory loggerFactory,   
         ISessionViewModelFactory sessionViewModelFactory
-        )  
+        ) : base(loggerFactory)
     {
         _sessionViewModelFactory = sessionViewModelFactory;
     }

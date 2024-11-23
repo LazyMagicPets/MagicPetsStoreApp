@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace ViewModels;
 
-public interface ISessionViewModel : ILzSessionViewModelAuthNotifications, INotifyPropertyChanged
+public interface ISessionViewModel : ILzSessionViewModelAuthNotifications
 {
     IStoreApi Store { get; set; }
     IConsumerApi Consumer { get; set; }

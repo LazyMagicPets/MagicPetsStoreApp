@@ -6,7 +6,9 @@ public static class ConfigureViewModels
     {
         var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
 
-        LzViewModelFactory.RegisterLz(services, assembly!); // Register services having interfaces ILzTransient, ILzSingleton and ILzScoped
+        RegisterFactories.Register(services);
+
+        // LzViewModelFactory.RegisterLz(services, assembly!); // Register services having interfaces ILzTransient, ILzSingleton and ILzScoped
 
         services.AddSingleton<ILzClientConfig,LzClientConfig>();    
         services.AddLazyMagicAuthCognito();
@@ -15,6 +17,7 @@ public static class ConfigureViewModels
         services.TryAddTransient<IConsumerApi, ConsumerApi.ConsumerApi>();
         services.TryAddTransient<IPublicApi, PublicApi.PublicApi>();
         services.TryAddTransient<ILzNotificationSvc, StoreNotificationSvc>();
+        
 
         return services;
     }

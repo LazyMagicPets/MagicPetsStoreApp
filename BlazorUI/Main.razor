@@ -9,6 +9,7 @@
 @inject ILzMessages Messages
 @inject IBaseAppJS BaseAppJS    
 @inject NavigationManager NavigationManager
+@inject ISessionsViewModel SessionsViewModel
 
 @if(ClientConfig.Configured)
 {
@@ -46,6 +47,7 @@ else
                 // We initialize the following because the DI container doens't have access
                 // to the JSRuntime until the first render in MAUI.
                 InternetConnectivity.SetJSRuntime(JSRuntime);
+                await InternetConnectivity.CheckInternetConnectivityAsync();
                 Messages.SetStaticAssets(staticAssets);
                 BaseAppJS.SetJSRuntime(JSRuntime);
                 await BaseAppJS.Initialize();

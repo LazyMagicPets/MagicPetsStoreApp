@@ -18,15 +18,16 @@
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => DrawerToggle())" />
         @tenancyName Store
         <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Inherit" OnClick="OpenInfoDialogAsync" />
+        <OnLine ViewModel="ViewModel!.SessionViewModel?.InternetConnectivity"/>
+        <SignedIn ViewModel="ViewModel!.SessionViewModel?.AuthProcess"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h5" Class="mt-1">Application</MudText>
+            <MudText Typo="Typo.h5" Class="mt-1">Menu</MudText>
         </MudDrawerHeader>
         <NavMenu Title="@tenancyName" />
     </MudDrawer>
     <MudMainContent id="yada">
-
         <MudContainer>
             <AppUpdates ViewModel="@BaseAppJS" />
             @Body
@@ -55,7 +56,7 @@
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        tenancyName = ViewModel?.TenancyConfig?["tenantName"]?.ToString();
+        tenancyName = ViewModel?.TenancyConfig?["tenantKey"]?.ToString();
 
         await base.OnAfterRenderAsync(firstRender);
     }

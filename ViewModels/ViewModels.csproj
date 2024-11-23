@@ -10,10 +10,16 @@
 	</PropertyGroup>
 
 	<!--<Import Project="..\..\LazyMagicClient\LazyMagic.Config\EmbedConfig.xml" />-->
-
+	
+	<ItemGroup>
+		<TrimmerRootAssembly Include="LazyMagic.Shared" />
+	</ItemGroup>	
+	
 	<ItemGroup>
 		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
-		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all" />
+		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all">
+			<!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+		</PackageReference>
 		<PackageReference Include="LazyMagic.Client.ModelGenerator" PrivateAssets="all" />
 		<PackageReference Include="LazyMagic.Client.ViewModels.Auth.Notifications" />
 		<PackageReference Include="LazyMagic.Shared" />
@@ -23,6 +29,7 @@
 
 		<PackageReference Include="ConsumerApi" />
 		<PackageReference Include="StoreApi" />
+		<PackageReference Include="Splat.Microsoft.Extensions.Logging" />
 		<PackageReference Include="PublicApi" />
 
 	</ItemGroup>

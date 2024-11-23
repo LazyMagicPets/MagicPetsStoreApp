@@ -1,0 +1,23 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBasePassViewModel<IAuthProcess>
+@if (ViewModel != null)
+{
+    @if (ViewModel!.IsSignedIn)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Success" Size="Size.Small" />
+    }
+    else
+    {
+        <MudIcon Icon="@Icons.Material.Filled.PersonOff" Color="Color.Success" Size="Size.Small" />
+    }
+}
+
+@code {
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ViewModel != null)
+            await base.OnInitializedAsync();
+    }
+}

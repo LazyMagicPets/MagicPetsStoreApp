@@ -12,7 +12,6 @@ public interface IBaseAppJS : INotifyPropertyChanged
     ValueTask Reload();
     ValueTask<int> GetMemory();
 	ValueTask SetPointerCapture(object elementRef, long pointerId);
-
 	ValueTask<string> GetBase64Image(object elementReferenceImg);
     ValueTask<string> GetBase64ImageDownsized(object elementReferenceImg);
 	ValueTask<bool> SharePng(string title, string text, string pngData, string? textData = null);

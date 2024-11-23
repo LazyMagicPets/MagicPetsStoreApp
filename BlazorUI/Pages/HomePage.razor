@@ -34,9 +34,6 @@
             <h1>Hi there, lets get connected!</h1>
         }
         <LzAuth ViewModel="@ViewModel!.AuthProcess" />
-@*         <MudButton Variant="Variant.Filled" OnClick="OnWSConnect">WebSocket Connect</MudButton>
-        <MudButton Variant="Variant.Filled" OnClick="OnSendMessage">WebSocket Message</MudButton>
-        <MudButton Variant="Variant.Filled" OnClick="OnWSDisconnect">WebSocket Disconnect</MudButton> *@
     </MudContainer>
 </MudPaper>
 
@@ -45,20 +42,5 @@
     {
         ViewModel = SessionsViewModel.SessionViewModel;
         await base.OnInitializedAsync();
-    }
-    private async Task OnWSConnect() 
-    {
-        if (ViewModel?.NotificationsSvc is null) return;
-        await ViewModel.NotificationsSvc!.ConnectAsync();
-    }
-    private async Task OnWSDisconnect()
-    {
-        if (ViewModel?.NotificationsSvc is null) return;
-        await ViewModel!.NotificationsSvc.DisconnectAsync();
-    }
-    private async Task OnSendMessage()
-    {
-        if (ViewModel?.NotificationsSvc is null) return;
-        await ViewModel!.NotificationsSvc.SendAsync("test message");
     }
 }

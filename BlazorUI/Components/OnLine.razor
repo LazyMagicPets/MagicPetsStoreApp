@@ -1,13 +1,23 @@
 ﻿@namespace BlazorUI
-@inherits LzComponentBasePassViewModel<ISessionViewModel> 
-@inject SessionsViewModel SessionsViewModel
-<h3>OnLine</h3>
+@inherits LzComponentBasePassViewModel<IInternetConnectivitySvc> 
+@if(ViewModel != null)
+{
+    @if (ViewModel.IsOnline)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Wifi" Color="Color.Success" Size="Size.Small" />
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Material.Filled.WifiOff" Color="Color.Success" Size="Size.Small"/>
+        }
+}
 
 @code {
 
+
 protected override async Task OnInitializedAsync()
     {
-        ViewModel = SessionsViewModel.SessionViewModel;
-        await base.OnInitializedAsync();
+        if(ViewModel != null)
+            await base.OnInitializedAsync();
     }   
 }

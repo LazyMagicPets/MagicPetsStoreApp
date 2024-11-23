@@ -35,11 +35,19 @@ public static class MauiProgram
         var configText = BlazorUI.AssemblyContent.ReadEmbeddedResource("wwwroot/appConfig.js");
         _appConfig = ExtractDataFromJs(configText);
 
+
+        // Configure logging
+        builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug); // Set minimum log level
+        builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);  // Only show Warning and above for ASP.NET Core
+        builder.Logging.AddFilter("MudBlazor", LogLevel.Warning);  // Only show Warning and above for MudBlazor
+
         builder.Services
             .AddSingleton<ILzMessages, LzMessages>()
             .AddSingleton<ILzClientConfig, LzClientConfig>()
             .AddSingleton(sp => new HttpClient())
-            .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
+            .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(
+                sp.GetRequiredService<ILoggerFactory>(),
+                new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
             .AddSingleton<BlazorInternetConnectivity>()
             .AddSingleton<IBlazorInternetConnectivity>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
             .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())

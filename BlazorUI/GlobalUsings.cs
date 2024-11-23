@@ -5,6 +5,7 @@ global using LazyMagic.Client.Base;
 global using LazyMagic.Blazor;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.JSInterop;
 global using MudBlazor;
 global using MudBlazor.Services;

@@ -8,7 +8,15 @@
     <p>Busy</p>
 }
 else {
-    <button type="button" class="btn btn-secondary" @onclick="OnSeedDatabase">Seed Database</button>
+    <MudSelect 
+        @bind-Value="_store">
+        @foreach (var store in _stores)
+        {
+            <MudSelectItem Value="@store">@store</MudSelectItem>
+        }
+    </MudSelect>
+    <MudNumericField @bind-Value="numPets" Label="Standard" Variant="Variant.Text" Min="0" Max="20" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSeedDatabase">Seed Database</MudButton>
     <p>@seedDbStatus</p>
 }
 
@@ -16,20 +24,24 @@ else {
     private string seedDbStatus = string.Empty;
     private string busyStatus = string.Empty;
     private bool isBusy = false;
-
+    private string _store = "Uptown";
+    private string[] _stores = { "Uptown", "Downtown" };
+    private int numPets = 10;
     protected override async Task OnInitializedAsync()
     {
         ViewModel = SessionsViewModel.SessionViewModel;
+
         await base.OnInitializedAsync();
     }
 
     private async Task OnSeedDatabase()
     {
+        
         try
         {
             isBusy = true;
             busyStatus = "Seeding Database";
-            await ViewModel!.Store.SeedPetsAsync();
+            await ViewModel!.Store.SeedPetsAsync(_store.ToLower(), numPets);
             seedDbStatus = "Seed Database Succeeded";
         } catch (Exception ex)
         {
