@@ -1,23 +1,26 @@
 <Project>
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1507</NoWarn>
+	</PropertyGroup>	
 	<ItemGroup>
 		<PackageVersion Include="coverlet.collector" Version="6.0.0" />
 		
-		<PackageVersion Include="LazyMagic.Client.Auth.Cognito" Version="1.0.1" />
+		<PackageVersion Include="LazyMagic.Client.Auth.Cognito" Version="1.1.0" />
 		<!--<PackageVersion Include="LazyMagic.Client.DIHelper" Version="1.0.0" />-->
-		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="1.0.1" />
-		<PackageVersion Include="LazyMagic.Client.ModelGenerator" Version="1.0.1" />
-		<PackageVersion Include="LazyMagic.Client.TreeViewModel" Version="1.0.1" />
-		<PackageVersion Include="LazyMagic.Client.ViewModels.Auth.Notifications" Version="1.0.1" />
+		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="1.1.0" />
+		<PackageVersion Include="LazyMagic.Client.ModelGenerator" Version="1.1.0" />
+		<PackageVersion Include="LazyMagic.Client.TreeViewModel" Version="1.1.0" />
+		<PackageVersion Include="LazyMagic.Client.ViewModels.Auth.Notifications" Version="1.1.0" />
 		
-		<PackageVersion Include="LazyMagic.Blazor" Version="1.0.1" />
-		<PackageVersion Include="LazyMagic.Blazor.Auth" Version="1.0.1" />
-		<PackageVersion Include="LazyMagic.Shared" Version="1.0.1" />
+		<PackageVersion Include="LazyMagic.Blazor" Version="1.1.0" />
+		<PackageVersion Include="LazyMagic.Blazor.Auth" Version="1.1.0" />
+		<PackageVersion Include="LazyMagic.Shared" Version="1.1.0" />
 		
-		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" />
-		<PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.0" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 		<PackageVersion Include="MSTest.TestAdapter" Version="3.1.2" />
 		<PackageVersion Include="MSTest.TestFramework" Version="3.1.2" />
@@ -26,15 +29,15 @@
 		
 		<PackageVersion Include="ConsumerApi" Version="1.0.0" />
 		<PackageVersion Include="PublicApi" Version="1.0.0" />
-		<PackageVersion Include="ReactiveUI" Version="20.1.1" />
-		<PackageVersion Include="ReactiveUI.Blazor" Version="20.1.1" />	
+		<PackageVersion Include="ReactiveUI" Version="20.1.63" />
+		<PackageVersion Include="ReactiveUI.Blazor" Version="20.1.63" />	
 		<PackageVersion Include="ReactiveUI.Fody" Version="19.5.41" />
 		<PackageVersion Include="Splat.Microsoft.Extensions.DependencyInjection" Version="15.2.22" />
 		<PackageVersion Include="Splat.Microsoft.Extensions.Logging" Version="15.2.22" />	
 		<PackageVersion Include="StoreApi" Version="1.0.0" />
 		
 
-		<PackageVersion Include="ReactiveUI" Version="20.1.1" />
+		<PackageVersion Include="ReactiveUI" Version="20.1.63" />
 		<PackageVersion Include="ReactiveUI.Fody" Version="19.5.41" />
 		<PackageVersion Include="Websocket.Client" Version="5.1.2" />
 	</ItemGroup>
