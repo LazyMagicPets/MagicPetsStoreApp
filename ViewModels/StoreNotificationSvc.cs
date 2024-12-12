@@ -112,12 +112,12 @@ public class StoreNotificationSvc : LzViewModel, ILzNotificationSvc, IAsyncDispo
     public async Task<List<LzNotification>> ReadNotificationsAsync(string connectionId,  long lastDateTimeTick)
     {   
         var notifications = new List<LzNotification>();
-        var more = false;
-        do
-        {
-            var notificationsResult = await storeApi.LzNotificationsPageListSessionIdDateTimeTicksAsync(connectionId, lastDateTimeTicks);
-            more = notificationsResult.More;
-        } while (more);
+        //var more = false;
+        //do
+        //{
+        //    var notificationsResult = await storeApi.LzNotificationsPageListSessionIdDateTimeTicksAsync(connectionId, lastDateTimeTicks);
+        //    more = notificationsResult.More;
+        //} while (more);
 
         return notifications;
     }
