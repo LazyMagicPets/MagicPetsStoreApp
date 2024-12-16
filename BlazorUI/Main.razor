@@ -53,6 +53,8 @@ else
                 await BaseAppJS.Initialize();
 
                 await ClientConfig.ReadAuthConfigAsync(Host.AssetsUrl + "config");
+                await ClientConfig.ReadTenancyConfigAsync(Host.AssetsUrl + "system/base/StoreApp/config.json");
+                await ClientConfig.ReadTenancyConfigAsync(Host.AssetsUrl + "tenancy/base/System/config.json");
                 try
                 {
                     // Read message files and set the default 
