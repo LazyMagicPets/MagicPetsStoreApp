@@ -15,5 +15,12 @@ export default {
         { "tenancy/base/StoreApp/": "PreCache" },
         { "tenancy/en-US/StoreApp/": "PreCache" },
         { "tenancy/es-MX/StoreApp/": "LazyCache" },
+
+        // Subtenancy
+        { "subtenancy/base/System/": "PreCache" },
+        { "subtenancy/base/StoreApp/": "PreCache" },
+        { "subtenancy/en-US/StoreApp/": "PreCache" },
+        { "subtenancy/es-MX/StoreApp/": "LazyCache" },
+
     ]
 };

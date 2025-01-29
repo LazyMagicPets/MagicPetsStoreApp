@@ -30,16 +30,16 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
             var tenantKey = (string?)clientConfig.TenancyConfig["tenantKey"] ?? throw new Exception("Cognito TenancyConfig.tenantKey is null");
             var sessionId = Guid.NewGuid().ToString(); 
 
-            var securityLevelStr = (string?)clientConfig.AuthConfigs?["EmployeeAuth"]?["userPoolSecurityLevel"] ?? throw new Exception("Cognito AuthConfig.securityLevel is null");
+            var securityLevelStr = (string?)clientConfig.AuthConfigs?["TenantAuth"]?["userPoolSecurityLevel"] ?? throw new Exception("Cognito AuthConfig.securityLevel is null");
             var securityLevel = int.Parse(securityLevelStr);
 
-            ILzHttpClient httpClientStore = new LzHttpClient(loggerFactory, securityLevel, tenantKey, authProcess.AuthProvider, lzHost, sessionId);
+            ILzHttpClient httpClientStore = new LzHttpClient(loggerFactory, securityLevel, authProcess.AuthProvider, lzHost, sessionId);
             Store = new StoreApi.StoreApi(httpClientStore);
 
-            ILzHttpClient httpClientConsumer = new LzHttpClient(loggerFactory, securityLevel, tenantKey, authProcess.AuthProvider, lzHost, sessionId);
+            ILzHttpClient httpClientConsumer = new LzHttpClient(loggerFactory, securityLevel,  authProcess.AuthProvider, lzHost, sessionId);
             Consumer = new ConsumerApi.ConsumerApi(httpClientConsumer);
 
-            ILzHttpClient httpClientPublic = new LzHttpClient(loggerFactory, 0, tenantKey, null, lzHost, sessionId);
+            ILzHttpClient httpClientPublic = new LzHttpClient(loggerFactory, 0, null, lzHost, sessionId);
             Public = new PublicApi.PublicApi(httpClientPublic);
 
             //NotificationsSvc = storeNotificationsSvcFactory.Create(authProcess, internetConnectivity, sessionId, Store);
@@ -49,7 +49,7 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
             TenantName = AppConfig.TenantName;
             var _region = (string?)clientConfig.Region ?? throw new Exception("Cognito AuthConfig.region is null");
             var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
-            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["EmployeeAuth"]!);
+            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["TenantAuth"]!);
 
         }
         catch (Exception ex)

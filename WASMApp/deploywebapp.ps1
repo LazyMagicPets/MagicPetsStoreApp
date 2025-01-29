@@ -26,7 +26,7 @@ if(-not $Guid.HasValue) {
 }
 $SystemName = $config.SystemName
 $awsProfile = $config.Profile
-$bucketName = "$SystemName-webapp-$AppName-$SystemGuid"
+$bucketName = "$SystemName---webapp-$AppName-$SystemGuid"
 
 
 dotnet publish -p:Publishprofile=FolderProfile

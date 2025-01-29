@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "ViewModels\Vi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2CCA5FAD-700F-4E32-80C9-CD7597DD30DC}"
 	ProjectSection(SolutionItems) = preProject
+		apppublish.json = apppublish.json
 		Directory.Packages.props = Directory.Packages.props
+		Import-LzAws.ps1 = Import-LzAws.ps1
 		.github\workflows\publish.yaml = .github\workflows\publish.yaml
 		README.md = README.md
 		ServiceVersion.props = ServiceVersion.props
