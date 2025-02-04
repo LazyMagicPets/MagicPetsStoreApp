@@ -44,7 +44,7 @@ else {
         {
             isBusy = true;
             busyStatus = "Seeding Database";
-            await ViewModel!.Store.SeedPetsAsync( storePrefix + _store.ToLower(), numPets);
+            await ViewModel!.Store.SeedPetsAsync( (storePrefix + _store.ToLower()).Replace('-','_'), numPets);
             seedDbStatus = "Seed Database Succeeded";
         } catch (Exception ex)
         {

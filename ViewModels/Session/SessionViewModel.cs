@@ -47,8 +47,8 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
             this.petsViewModelFactory = petsViewModelFactory ?? throw new ArgumentNullException(nameof(petsViewModelFactory));
             PetsViewModel = petsViewModelFactory.Create(this);
             TenantName = AppConfig.TenantName;
-            var _region = (string?)clientConfig.Region ?? throw new Exception("Cognito AuthConfig.region is null");
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
+            //var _region = (string?)clientConfig.Region ?? throw new Exception("Cognito AuthConfig.region is null");
+            //var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
             authProcess.SetAuthenticator(clientConfig.AuthConfigs?["TenantAuth"]!);
 
         }
