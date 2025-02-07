@@ -59,6 +59,7 @@ public partial class Program
         .AddSingleton<ILzMessages, LzMessages>()
         .AddSingleton<ILzClientConfig, LzClientConfig>()
         .AddSingleton<BlazorInternetConnectivity>()
+
         .AddSingleton<IBlazorInternetConnectivity>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
         .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
         .AddSingleton<ILzHost>(sp => new LzHost(
