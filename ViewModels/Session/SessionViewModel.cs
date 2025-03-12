@@ -6,7 +6,7 @@ namespace ViewModels;
 /// The SessionViewModel is the root viewModel for a user session.
 /// This class maintains the "state" of the user session, which includes 
 /// the data (in this case the PetsViewMode).
-/// </summary>
+/// </summary>Dep
 [Factory]
 public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionViewModel
 {
@@ -18,38 +18,31 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
         [FactoryInject] ILzMessages messages, // singleton
         [FactoryInject] IAuthProcess authProcess, // transient
         [FactoryInject] IPetsViewModelFactory petsViewModelFactory, // transient
-        [FactoryInject] IStoreNotificationSvcFactory storeNotificationsSvcFactory // transient
+        [FactoryInject] ICategoriesViewModelFactory categoriesViewModelFactory, // transient
+        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory // transient
         )
         : base(loggerFactory, authProcess, clientConfig, internetConnectivity, messages)  
     {
         try
         {
-            //var lzHostRpt = JsonConvert.SerializeObject(lzHost, new JsonSerializerSettings { Formatting = Formatting.Indented });   
-            //Console.WriteLine(lzHostRpt);
-
             var tenantKey = (string?)clientConfig.TenancyConfig["tenantKey"] ?? throw new Exception("Cognito TenancyConfig.tenantKey is null");
+            TenantName = AppConfig.TenantName;
+            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["TenantAuth"]!);
+            authProcess.SetSignUpAllowed(false);
+
             var sessionId = Guid.NewGuid().ToString(); 
 
-            var securityLevelStr = (string?)clientConfig.AuthConfigs?["EmployeeAuth"]?["userPoolSecurityLevel"] ?? throw new Exception("Cognito AuthConfig.securityLevel is null");
-            var securityLevel = int.Parse(securityLevelStr);
+            Store = new StoreApi.StoreApi(new LzHttpClient(loggerFactory, authProcess.AuthProvider, lzHost, sessionId));
 
-            ILzHttpClient httpClientStore = new LzHttpClient(loggerFactory, securityLevel, tenantKey, authProcess.AuthProvider, lzHost, sessionId);
-            Store = new StoreApi.StoreApi(httpClientStore);
+            Consumer = new ConsumerApi.ConsumerApi(new LzHttpClient(loggerFactory, authProcess.AuthProvider, lzHost, sessionId));
 
-            ILzHttpClient httpClientConsumer = new LzHttpClient(loggerFactory, securityLevel, tenantKey, authProcess.AuthProvider, lzHost, sessionId);
-            Consumer = new ConsumerApi.ConsumerApi(httpClientConsumer);
+            Public = new PublicApi.PublicApi(new LzHttpClient(loggerFactory, null, lzHost, sessionId));
 
-            ILzHttpClient httpClientPublic = new LzHttpClient(loggerFactory, 0, tenantKey, null, lzHost, sessionId);
-            Public = new PublicApi.PublicApi(httpClientPublic);
+            PetsViewModel = petsViewModelFactory?.Create(this) ?? throw new ArgumentNullException(nameof(petsViewModelFactory));
 
-            //NotificationsSvc = storeNotificationsSvcFactory.Create(authProcess, internetConnectivity, sessionId, Store);
+            CategoriesViewModel = categoriesViewModelFactory?.Create(this) ?? throw new ArgumentNullException(nameof(categoriesViewModelFactory));
 
-            this.petsViewModelFactory = petsViewModelFactory ?? throw new ArgumentNullException(nameof(petsViewModelFactory));
-            PetsViewModel = petsViewModelFactory.Create(this);
-            TenantName = AppConfig.TenantName;
-            var _region = (string?)clientConfig.Region ?? throw new Exception("Cognito AuthConfig.region is null");
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
-            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["EmployeeAuth"]!);
+            TagsViewModel = tagsViewModelFactory?.Create(this) ?? throw new ArgumentNullException(nameof(tagsViewModelFactory));
 
         }
         catch (Exception ex)
@@ -62,20 +55,20 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
     public IConsumerApi Consumer { get; set; }
     public IPublicApi Public { get; set; }  
 
-    private IPetsViewModelFactory petsViewModelFactory;  
     public PetsViewModel PetsViewModel { get; set; }
+    public CategoriesViewModel CategoriesViewModel { get; set; }
+    public TagsViewModel TagsViewModel { get; set; }
     public string TenantName { get; set; } = string.Empty;
 
-    // Base class calls LoadAsync () when IsSignedIn changes to true
-    public override async Task LoadAsync()
-    {
-        await PetsViewModel.ReadAsync();
-    }
     // Base class calls UnloadAsync () when IsSignedIn changes to false
     public override async Task UnloadAsync()
     {
-        if(PetsViewModel != null)
-            PetsViewModel = petsViewModelFactory.Create(this);
+        if (PetsViewModel != null) PetsViewModel.Clear();
+
+        if (CategoriesViewModel != null) CategoriesViewModel.Clear();
+
+        if (TagsViewModel != null) TagsViewModel.Clear();
+
         await Task.Delay(0);    
     }
 }

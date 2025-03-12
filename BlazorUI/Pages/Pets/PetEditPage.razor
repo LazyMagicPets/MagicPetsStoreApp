@@ -10,13 +10,15 @@
 @using FluentValidation
 
 <MudCard>
-    <MudForm ViewModel="@model" @ref="@form" Validation="@(petModelValidator.ValidateValue)" ValidationDelay="0">
+    <MudForm Model="@model" @ref="@form" Validation="@(petModelValidator.ValidateValue)" ValidationDelay="0">
         <MudCardContent>
-            <MudTextField 
-                @bind-Value="model.Name"
-                For="@(() => model.Name)"
-                Immediate="true"
-                Label="Name" />
+            <PetStatusSelect @bind-Value="@model.PetStatus" />
+            <MudTextField @bind-Value="model.Name"
+            For="@(() => model.Name)"
+            Immediate="true"
+            Label="Name" />
+            <CategorySelect @bind-Value="@model.Category" />
+            <TagsSelect @bind-SelectedValues="@model.Tags" />
         </MudCardContent>
     </MudForm>
     <MudCardActions>
@@ -89,6 +91,7 @@
 
     private async Task SaveEditAsync()
     {
+
         await form!.Validate();
 
         if(!form.IsValid)
@@ -118,7 +121,7 @@
     // method required by MudBlazor. So, you may have three levels of validation:
     // 1. DTO level validation in the ClientSDK - validates the DTO is suitable for transfer
     // 2. Model level validation in the ClientSDK - generally applicable business domain validation 
-    // 3. Local validation in the BlazorUI project - ws specific validation
+    // 3. Local validation in the BlazorUI project - frontend specific validation
     partial class LocalPetModelValidator : PetModelValidator  {
 
         // CustomValidation called from PetModelValidator constructor

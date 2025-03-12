@@ -12,7 +12,6 @@ public class PetsViewModel : LzItemsViewModelAuthNotifications<PetViewModel, Pet
         _sessionViewModel = sessionViewModel;
         PetViewModelFactory = petViewModelFactory;
         _DTOReadListAsync = sessionViewModel.Public.ListPetsAsync;
-        SvcTestAsync = sessionViewModel.Store.TestEmployeeAsync;
 
     }
     private ISessionViewModel _sessionViewModel;
@@ -25,9 +24,13 @@ public class PetsViewModel : LzItemsViewModelAuthNotifications<PetViewModel, Pet
     {
         if (SvcTestAsync is null)
             return string.Empty;
-        return await SvcTestAsync();
+        return await SvcTestAsync();    
     }
     /// <inheritdoc/>
     public override async Task<(bool, string)> ReadAsync(bool forceload = false)
     => await base.ReadAsync(forceload);
+
+
 }
+
+

@@ -1,0 +1,37 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBaseAssignViewModel<CategoriesViewModel>
+@inject ISessionsViewModel SessionsViewModel
+
+@if (ViewModel is not null)
+{
+    <MudSelect T="string" 
+        Label="Category" 
+        @bind-Value="@Value"
+        TextChanged="@((string val) => ValueChanged.InvokeAsync(val))"
+        Dense="true"
+        Margin="Margin.Dense">
+        @foreach (var category in ViewModel!.ViewModels.Keys.ToArray())
+        {
+                <MudSelectItem Value="@category">@category</MudSelectItem>
+            }
+    </MudSelect>
+}
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel = SessionsViewModel?.SessionViewModel?.CategoriesViewModel;
+        if (ViewModel != null)
+        {
+            if (ViewModel.ViewModels.Count == 0)
+            {
+                await ViewModel.ReadAsync();
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+}

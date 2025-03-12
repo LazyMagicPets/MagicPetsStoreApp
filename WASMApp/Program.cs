@@ -59,6 +59,7 @@ public partial class Program
         .AddSingleton<ILzMessages, LzMessages>()
         .AddSingleton<ILzClientConfig, LzClientConfig>()
         .AddSingleton<BlazorInternetConnectivity>()
+
         .AddSingleton<IBlazorInternetConnectivity>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
         .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<BlazorInternetConnectivity>())
         .AddSingleton<ILzHost>(sp => new LzHost(
@@ -100,7 +101,7 @@ public partial class Program
         await jsRuntime.InvokeVoidAsync("loadStaticAssets");
     }
 
-    private static async Task<JObject> GetAppConfigAsync(IJSRuntime jsRuntime)
+    private static async Task<JObject?> GetAppConfigAsync(IJSRuntime jsRuntime)
     {
         try
         {

@@ -30,7 +30,6 @@
                 {
                     isBusy = true;
                     await ViewModel.CreateSessionAsync(); 
-                    ViewModel!.SessionViewModel!.AuthProcess.SetSignUpAllowed(true);
                 }
                 catch (Exception ex)
                 {
