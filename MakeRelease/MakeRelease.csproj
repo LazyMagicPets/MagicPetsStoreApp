@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<ProjectReference Include="..\WASMApp\WASMApp.csproj" />
 	</ItemGroup>
 
@@ -36,6 +36,6 @@
 			Condition="Exists('../WASMApp/bin/Release/$(TargetFramework)/publish/wwwroot')"
 			SourceDirectory="../WASMApp/bin/Release/$(TargetFramework)/publish/wwwroot"
 			DestinationFile="../Release/App.zip" />
-	</Target>
+	</Target>-->
 
 </Project>

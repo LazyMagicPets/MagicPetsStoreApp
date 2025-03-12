@@ -1,0 +1,44 @@
+﻿@namespace BlazorUI
+@inherits LzComponentBaseAssignViewModel<TagsViewModel>
+@inject ISessionsViewModel SessionsViewModel
+
+@if(ViewModel is not null)
+{
+    <MudSelect T="string"  
+    Label="Tags"  
+    MultiSelection="true"
+    SelectedValues="@SelectedValues" 
+    SelectedValuesChanged="@ValueChangedHandler"
+    Dense="true"
+    Margin="Margin.Dense">
+        @foreach (var tag in ViewModel!.ViewModels.Keys.ToArray())
+        {
+            <MudSelectItem Value="@tag">@tag</MudSelectItem>
+        }
+    </MudSelect>
+}   
+
+@code {
+    [Parameter] public ICollection<string>? SelectedValues{ get; set; }
+    [Parameter] public EventCallback<ICollection<string>> SelectedValuesChanged { get; set; }
+    private IEnumerable<string> _options = new HashSet<string> { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel = SessionsViewModel?.SessionViewModel?.TagsViewModel;
+        if (ViewModel != null)
+        {
+            if (ViewModel.ViewModels.Count == 0)
+            {
+                await ViewModel.ReadAsync();
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private async void ValueChangedHandler(IEnumerable<string> selectedValues )
+    {
+        SelectedValues = selectedValues.Where(value => !string.IsNullOrEmpty(value)).ToList();
+        await SelectedValuesChanged.InvokeAsync(SelectedValues);
+    }
+}

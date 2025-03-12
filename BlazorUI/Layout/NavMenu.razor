@@ -11,10 +11,6 @@
         @if(ViewModel!.IsSignedIn)
         {
             <MudNavLink Href="PetsPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Pets">Pets</MudNavLink>
-            @if (ViewModel!.IsAdmin)
-            {
-                <MudNavLink Href="AdminPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AdminPanelSettings">Admin</MudNavLink>
-            }
         }
     </MudNavMenu>
 } 

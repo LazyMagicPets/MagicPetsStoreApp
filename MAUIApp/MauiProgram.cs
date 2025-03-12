@@ -70,8 +70,7 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 #endif
-        builder.Services
-        .AddBlazorUI();
+        builder.Services.AddBlazorUI();
         return builder.Build();
     }
 

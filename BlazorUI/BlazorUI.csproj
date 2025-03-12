@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -21,12 +22,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
 		<PackageReference Include="LazyMagic.Blazor.Auth" />
 		<PackageReference Include="MudBlazor" />
-		
-
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
 

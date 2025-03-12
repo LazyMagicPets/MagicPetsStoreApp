@@ -1,0 +1,28 @@
+﻿@namespace BlazorUI
+@inject ISessionsViewModel SessionsViewModel
+
+<MudSelect T="string"
+Label="Category"
+@bind-Value="@value"
+TextChanged="@((string val) => ValueChanged.InvokeAsync((PetStatus)Enum.Parse(typeof(PetStatus),val)))"
+Dense="true"
+Margin="Margin.Dense">
+    @foreach (var status in values)
+    {
+        <MudSelectItem Value="@status">@status</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public PetStatus? Value { get; set; }
+    [Parameter] public EventCallback<PetStatus> ValueChanged { get; set; }
+    private List<string> values = Enum.GetValues<PetStatus>().Select(x => x.ToString()).ToList();   
+    private string value = "";  
+    
+    protected override async Task OnInitializedAsync()
+    {
+        value = Value?.ToString() ?? "";
+        await base.OnInitializedAsync();
+    }
+
+}

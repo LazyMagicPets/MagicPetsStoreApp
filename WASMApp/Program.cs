@@ -101,7 +101,7 @@ public partial class Program
         await jsRuntime.InvokeVoidAsync("loadStaticAssets");
     }
 
-    private static async Task<JObject> GetAppConfigAsync(IJSRuntime jsRuntime)
+    private static async Task<JObject?> GetAppConfigAsync(IJSRuntime jsRuntime)
     {
         try
         {

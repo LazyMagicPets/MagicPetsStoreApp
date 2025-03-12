@@ -6,7 +6,7 @@ public static class ConfigureViewModels
     {
         var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
 
-        RegisterFactories.Register(services);
+        ViewModelsRegisterFactories.ViewModelsRegister(services);
 
         // LzViewModelFactory.RegisterLz(services, assembly!); // Register services having interfaces ILzTransient, ILzSingleton and ILzScoped
 
@@ -16,8 +16,6 @@ public static class ConfigureViewModels
         services.TryAddTransient<IStoreApi, StoreApi.StoreApi>();
         services.TryAddTransient<IConsumerApi, ConsumerApi.ConsumerApi>();
         services.TryAddTransient<IPublicApi, PublicApi.PublicApi>();
-        services.TryAddTransient<ILzNotificationSvc, StoreNotificationSvc>();
-        
 
         return services;
     }
