@@ -25,6 +25,8 @@
 		
 	</ItemGroup>
 
-	<Import Project="..\BlazorUI\ReplaceBaseUrlAfterPublish.props"  />
+	<Target Name="ReplaceBaseUrlAfterPublish" AfterTargets="Publish">
+		<Exec Command="pwsh -NonInteractive -ExecutionPolicy Bypass -File &quot;$(ProjectDir)ReplaceBaseUrl.ps1&quot; -indexHtmlPath &quot;bin/Release/net9.0/publish/wwwroot/index.html&quot; -newBaseUrl &quot;/store/&quot;" />
+	</Target>
 
 </Project>
