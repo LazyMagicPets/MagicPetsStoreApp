@@ -10,7 +10,7 @@ public class TagsViewModel : LzItemsViewModelAuthNotifications<TagViewModel, Tag
     {
         _sessionViewModel = sessionViewModel;
         TagViewModelFactory = tagViewModelFactory;
-        _DTOReadListAsync = sessionViewModel.Public.GetPetTagsAsync;
+        _DTOReadListAsync = sessionViewModel.Public.PublicModuleGetPetTagsAsync;
     }
     private ISessionViewModel _sessionViewModel;
     public ITagViewModelFactory? TagViewModelFactory { get; init; }

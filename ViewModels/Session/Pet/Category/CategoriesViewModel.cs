@@ -11,7 +11,7 @@ public class CategoriesViewModel : LzItemsViewModelAuthNotifications<CategoryVie
     {
         _sessionViewModel = sessionViewModel;
         CategoryViewModelFactory = categoryViewModelFactory;
-        _DTOReadListAsync = sessionViewModel.Public.GetPetCategoriesAsync;
+        _DTOReadListAsync = sessionViewModel.Public.PublicModuleGetPetCategoriesAsync;
     }
     private ISessionViewModel _sessionViewModel;
     public ICategoryViewModelFactory? CategoryViewModelFactory { get; init; }

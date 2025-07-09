@@ -7,11 +7,11 @@ var metaCharset = document.createElement('meta');
 metaCharset.setAttribute('charset', 'utf-8');
 document.head.appendChild(metaCharset);
 
-// Link tags
+var baseheadscript = document.createElement('script');
+baseheadscript.src = '_content/BaseApp.BlazorUI/baseindexhead.js';
+document.head.appendChild(baseheadscript);
+
 var links = [
-    { href: '/system/base/System/favicon.png', rel: 'icon', type: 'image/png' },
-    { href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap', rel: 'stylesheet' },
-    { href: '_content/MudBlazor/MudBlazor.min.css', rel: 'stylesheet' }
 ];
 
 links.forEach(function (linkInfo) {

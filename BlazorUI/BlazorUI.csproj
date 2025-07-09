@@ -24,7 +24,7 @@
 	<ItemGroup>
 		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
 		<PackageReference Include="LazyMagic.Blazor.Auth" />
-		<PackageReference Include="MudBlazor" />
+		<PackageReference Include="BaseApp.BlazorUI" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
 

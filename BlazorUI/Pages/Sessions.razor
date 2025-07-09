@@ -1,5 +1,6 @@
 ﻿@namespace BlazorUI
 @page "/"
+@layout LoadingLayout
 @inherits LzComponentBaseInjectViewModel<ISessionsViewModel>
 @inject NavigationManager NavigationManager
 @inject ILzClientConfig ClientConfig
@@ -18,9 +19,12 @@
 
 @code {
     private bool isBusy = false;
+    private LzAppLoading? loadingComponent;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender && loadingComponent != null)
+            _ = loadingComponent!.AnimateToCompletion();
 
         if (ClientConfig.Configured)
         {

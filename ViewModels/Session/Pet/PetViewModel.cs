@@ -14,10 +14,10 @@ public class PetViewModel : LzItemViewModelAuthNotifications<Pet, PetModel>
     {
         _sessionViewModel = sessionViewModel;   
         ParentViewModel = parentViewModel;
-        _DTOCreateAsync = sessionViewModel.Store.AddPetAsync;
-        _DTOReadAsync = sessionViewModel.Public.GetPetByIdAsync;
-        _DTOUpdateAsync = sessionViewModel.Store.UpdatePetAsync;
-        _DTODeleteAsync = sessionViewModel.Store.DeletePetAsync;   
+        _DTOCreateAsync = sessionViewModel.Store.StoreModuleAddPetAsync;
+        _DTOReadAsync = sessionViewModel.Public.PublicModuleGetPetByIdAsync;
+        _DTOUpdateAsync = sessionViewModel.Store.StoreModuleUpdatePetAsync;
+        _DTODeleteAsync = sessionViewModel.Store.StoreModuleDeletePetAsync;   
     }
     private ISessionViewModel _sessionViewModel;
     public override string Id => Data?.Id ?? string.Empty;

@@ -11,16 +11,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <base href="" />
-    <!-- Do not load application component specific styles inline. Instead put them
-    in the indexhead.js script. -->
-    <script src="_content/BlazorUI/indexhead.js"></script>
-
-    <link href="WASMApp.styles.css" rel="stylesheet" />
+    <link href="./WASMApp.styles.css" rel="stylesheet" />
     <link href="_content/BlazorUI/manifest.json" rel="manifest" />
-    <link href="_content/BlazorUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
-    <!-- Do not load application component speicific styles inline. Instead put them
+
+    <!-- Do not load application component specific styles inline. Instead put them
         in the indexhead.js script. -->
+    <script src="_content/BlazorUI/indexhead.js"></script>
+    <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -32,7 +29,6 @@
         </svg>
         <div class="loading-progress-text"></div>
     </div>
-
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
@@ -51,7 +47,6 @@
         and service-worker-published.js. Specifically, MSBuild publish copies
         service-worker-published.js to service-worker.js. -->
     <script type="module" src="indexinit.js"></script>
-
 </body>
 
 </html>

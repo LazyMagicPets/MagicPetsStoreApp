@@ -8,7 +8,7 @@ namespace ViewModels;
 /// the data (in this case the PetsViewMode).
 /// </summary>Dep
 [Factory]
-public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionViewModel
+public class SessionViewModel : BaseAppSessionViewModelAuthNotifications, ISessionViewModel
 {
     public SessionViewModel(
         [FactoryInject] ILoggerFactory loggerFactory, // singleton
@@ -19,7 +19,8 @@ public class SessionViewModel : LzSessionViewModelAuthNotifications, ISessionVie
         [FactoryInject] IAuthProcess authProcess, // transient
         [FactoryInject] IPetsViewModelFactory petsViewModelFactory, // transient
         [FactoryInject] ICategoriesViewModelFactory categoriesViewModelFactory, // transient
-        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory // transient
+        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory, // transient
+        ISessionsViewModel sessionsViewModel
         )
         : base(loggerFactory, authProcess, clientConfig, internetConnectivity, messages)  
     {

@@ -6,22 +6,24 @@ namespace ViewModels;
 /// a singleton created by the DI container.
 /// Call the InitAsync() method before calling other methods in the class. 
 /// </summary>
-public class SessionsViewModel : LzSessionsViewModelAuthNotifications<ISessionViewModel>, ISessionsViewModel
+public class SessionsViewModel : BaseAppSessionsViewModeAuthNotifications<ISessionViewModel>, ISessionsViewModel
 {
     public SessionsViewModel(
-        ILoggerFactory loggerFactory,   
+        ILoggerFactory loggerFactory,
+        ITenantConfigViewModelFactory tenantConfigViewModelFactory,
+        IStaticAssets staticAssets,
+        IBaseAppJS baseAppJS,
         ISessionViewModelFactory sessionViewModelFactory
-        ) : base(loggerFactory)
+        ) : base(loggerFactory, tenantConfigViewModelFactory, staticAssets, baseAppJS)
     {
         _sessionViewModelFactory = sessionViewModelFactory;
     }
     private ISessionViewModelFactory _sessionViewModelFactory;
 
-    public JObject TenancyConfig { get; set; } = new JObject();
 
     public override ISessionViewModel CreateSessionViewModel()
     {
-        return _sessionViewModelFactory.Create();
+        var sessionViewModel = _sessionViewModelFactory.Create(this);
+        return sessionViewModel;
     }
-
 }

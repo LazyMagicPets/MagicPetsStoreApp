@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<DebugType>portable</DebugType>
 		<!--<Optimize>false</Optimize>-->
 		<PublishTrimmed>true</PublishTrimmed>
@@ -13,18 +13,12 @@
 	<ItemGroup>
 		<_WebToolingArtifacts Remove="Properties\PublishProfiles\FolderProfileDebug.pubxml" />
 		<TrimmerRootDescriptors Include="LinkerConfig.xml" />
-		
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Extensions.Logging" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-		
-		<ProjectReference Include="..\BlazorUI\BlazorUI.csproj" />
-
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-		
+		<ProjectReference Include="../BlazorUI/BlazorUI.csproj" />
 	</ItemGroup>
-
+	
 	<Import Project="..\BlazorUI\ReplaceBaseUrlAfterPublish.props"  />
 
 </Project>

@@ -11,7 +11,7 @@ public class PetsViewModel : LzItemsViewModelAuthNotifications<PetViewModel, Pet
     { 
         _sessionViewModel = sessionViewModel;
         PetViewModelFactory = petViewModelFactory;
-        _DTOReadListAsync = sessionViewModel.Public.ListPetsAsync;
+        _DTOReadListAsync = sessionViewModel.Public.PublicModuleListPetsAsync;
 
     }
     private ISessionViewModel _sessionViewModel;

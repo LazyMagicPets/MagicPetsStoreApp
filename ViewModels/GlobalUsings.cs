@@ -1,4 +1,5 @@
-﻿global using LazyMagic.Client.Auth;
+﻿global using BaseApp.ViewModels;
+global using LazyMagic.Client.Auth;
 global using LazyMagic.Client.Base;
 global using LazyMagic.Client.ViewModels;
 global using Microsoft.Extensions.DependencyInjection;

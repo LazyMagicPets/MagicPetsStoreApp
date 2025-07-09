@@ -9,7 +9,7 @@ public static class ConfigureBlazorUI
     public static IServiceCollection AddBlazorUI(this IServiceCollection services)
     {
         return services
-            .AddMudServices()
+            .AddBaseApp()
             .AddAppViewModels()
             //.AddLazyMagicAuthCognito()
             ;

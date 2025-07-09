@@ -5,11 +5,12 @@
 @inject HttpClient HttpClient
 @inject ILzClientConfig ClientConfig
 @inject IOSAccess OSAccess
-@inject IBlazorInternetConnectivity InternetConnectivity
 @inject ILzMessages Messages
 @inject IBaseAppJS BaseAppJS    
 @inject NavigationManager NavigationManager
 @inject ISessionsViewModel SessionsViewModel
+@inject IConnectivityService ConnectivityService
+@inject BrowserFingerprintService BrowserFingerprintService
 
 @if(ClientConfig.Configured)
 {
@@ -44,12 +45,12 @@ else
             {
                 // We initialize the following because the DI container doens't have access
                 // to the JSRuntime until the first render in MAUI.
-                InternetConnectivity.SetJSRuntime(JSRuntime);
-                await InternetConnectivity.CheckInternetConnectivityAsync();
+                await ConnectivityService.InitializeAsync(JSRuntime);  
                 Messages.SetStaticAssets(staticAssets);
                 BaseAppJS.SetJSRuntime(JSRuntime);
                 await BaseAppJS.Initialize();
                 await ClientConfig.InitializeAsync(Host.AssetsUrl);
+                BrowserFingerprintService.SetJSRuntime(JSRuntime);
 
                 try
                 {

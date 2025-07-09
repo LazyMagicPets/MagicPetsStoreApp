@@ -3,23 +3,25 @@
 		<NoWarn>$(NoWarn);NU1507</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />
-		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" />
-		<PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.2" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.2" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
+		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" />
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.3" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.3" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageVersion Include="MudBlazor" Version="8.3.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageVersion Include="LazyMagic.Client.Auth.Cognito" Version="1.4.0" />
-		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="1.4.0" />
-		<PackageVersion Include="LazyMagic.Client.ViewModels.Auth.Notifications" Version="1.4.0" />
-		<PackageVersion Include="LazyMagic.Blazor.Auth" Version="1.4.0" />
-		<PackageVersion Include="LazyMagic.Shared" Version="1.4.0" />
+		<PackageVersion Include="LazyMagic.Client.Auth.Cognito" Version="2.0.0" />
+		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="2.0.0" />
+		<PackageVersion Include="LazyMagic.Client.ViewModels.Auth.Notifications" Version="2.0.0" />
+		<PackageVersion Include="LazyMagic.Blazor.Auth" Version="2.0.0" />
+		<PackageVersion Include="LazyMagic.Shared" Version="2.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageVersion Include="BaseApp.ViewModels" Version="1.3.0" />
+		<PackageVersion Include="BaseApp.BlazorUI" Version="1.3.0" />
 		<PackageVersion Include="ConsumerApi" Version="1.0.0" />
 		<PackageVersion Include="PublicApi" Version="1.0.0" />
 		<PackageVersion Include="StoreApi" Version="1.0.0" />
