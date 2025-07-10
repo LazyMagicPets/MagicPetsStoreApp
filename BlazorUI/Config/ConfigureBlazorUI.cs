@@ -11,7 +11,6 @@ public static class ConfigureBlazorUI
         return services
             .AddBaseApp()
             .AddAppViewModels()
-            //.AddLazyMagicAuthCognito()
             ;
     }
     public static ILzMessages AddBlazorUIMessages(this ILzMessages lzMessages)

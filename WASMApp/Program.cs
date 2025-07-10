@@ -1,8 +1,3 @@
-using LazyMagic.Blazor;
-using Microsoft.JSInterop;
-using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
-
 
 public partial class Program
 {
@@ -58,7 +53,7 @@ public partial class Program
         // Here, we only register classes that require specific WASM configuration.
         // The call to AddBlazorUI() will register all the other classes that are not WASM specific.
         builder.Services
-        .AddSingleton(sp => new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) })
+            .AddSingleton(sp => new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) })
 
             .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(
                 sp.GetRequiredService<ILoggerFactory>(),

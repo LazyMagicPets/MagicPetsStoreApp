@@ -26,6 +26,23 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script>
+        window.myAppConfig = {
+            apiUrl: "https://api.example.com",
+            version: "1.0.0"
+        };
+        window.isLoaded = false;
+
+        window.addEventListener('load', function () {
+            window.isLoaded = true;
+        });
+
+        window.checkIfLoaded = function () {
+            return window.isLoaded;
+        };
+
+    </script>
+
     <!-- Do not load application component specific scripts inline. Instead load them
     in the indexbody.js script. -->
     <script src="_content/BlazorUI/indexbody.js"></script>

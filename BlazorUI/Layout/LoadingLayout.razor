@@ -1,8 +1,12 @@
 @namespace BlazorUI
 @inherits LayoutComponentBase
+@inject IBaseAppJS BaseAppJS
 
-<Layout>
-    <LayoutContent>
-        @Body
-    </LayoutContent>
-</Layout>
+<MudLayout>
+    <MudMainContent id="yada">
+        <MudContainer>
+            <AppUpdates ViewModel="@BaseAppJS" />
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
