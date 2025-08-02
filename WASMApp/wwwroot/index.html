@@ -10,24 +10,30 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <base href="" />
+    <base href="/" />
+    <link rel="stylesheet" href="_content/LazyMagic.Blazor/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="_content/LazyMagic.Blazor/css/app.css" />
     <link href="./WASMApp.styles.css" rel="stylesheet" />
     <link href="_content/BlazorUI/manifest.json" rel="manifest" />
 
-    <!-- Do not load application component specific styles inline. Instead put them
-        in the indexhead.js script. -->
+    <!-- Load addLink(), addScript() functions -->
+    <script src="_content/LazyMagic.Blazor/indexconfig.js"></script>
+
+    <!-- indexhead.js uses addLink() and addScript() to add required elements -->
     <script src="_content/BlazorUI/indexhead.js"></script>
-    <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
 </head>
 
 <body>
     <div class="status-bar-safe-area"></div>
     <div id="main">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <div class="loading-progress" style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
+            <svg viewBox="0 0 100 100">
+                <circle r="40" cx="50" cy="50" />
+                <circle r="40" cx="50" cy="50" />
+            </svg>
+            <div class="loading-progress-text"></div>
+            <div class="loading-message-text">Loading App</div>
+        </div>
     </div>
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -35,8 +41,7 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <!-- Do not load application component specific scripts inline. Instead load them
-        in the indexbody.js script. -->
+    <!-- indexbody.js uses addBodyScript() to add required elements -->
     <script src="_content/BlazorUI/indexbody.js"></script>
 
     <script src="_framework/blazor.webassembly.js"></script>

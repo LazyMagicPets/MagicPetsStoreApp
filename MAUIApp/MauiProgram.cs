@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using LazyMagic.Blazor;
 using ViewModels;
 using System.Text.RegularExpressions;
+
 namespace MAUIApp;
 
 public static class MauiProgram
@@ -46,8 +47,6 @@ public static class MauiProgram
             .AddSingleton<IStaticAssets>(sp => new BlazorStaticAssets(
                 sp.GetRequiredService<ILoggerFactory>(),
                 new HttpClient { BaseAddress = new Uri((string)_appConfig!["assetsUrl"]!) }))
-            .AddSingleton<IConnectivityService, ConnectivityService>()
-            .AddSingleton<IInternetConnectivitySvc>(sp => sp.GetRequiredService<IConnectivityService>())
             .AddSingleton<ILzHost>(sp => new LzHost(
                 appPath: (string)_appConfig!["appPath"]!, // app path
                 appUrl: (string)_appConfig!["appUrl"]!, // app url  
@@ -65,6 +64,7 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 #endif
+        builder.Services.AddAppViewModels();
         builder.Services.AddBlazorUI();
         return builder.Build();
     }

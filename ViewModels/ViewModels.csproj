@@ -7,23 +7,18 @@
 		<DebugType>portable</DebugType>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<TrimmerRootAssembly Include="LazyMagic.Shared" />
 	</ItemGroup>	
 	
 	<ItemGroup>
-		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
 		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all" />
-		<PackageReference Include="LazyMagic.Client.ViewModels.Auth.Notifications" />
-		<PackageReference Include="LazyMagic.Shared" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BaseApp.ViewModels" />
-		<PackageReference Include="ConsumerApi" />
 		<PackageReference Include="StoreApi" />
-		<PackageReference Include="PublicApi" />		
 	</ItemGroup>
 
 </Project>

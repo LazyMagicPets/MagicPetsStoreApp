@@ -27,5 +27,9 @@
 		<PackageReference Include="BaseApp.BlazorUI" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Components\" />
+	</ItemGroup>
 
 </Project>

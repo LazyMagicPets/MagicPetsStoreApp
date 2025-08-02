@@ -13,9 +13,15 @@
 @*
     This page is the first page that is loaded when the app starts. In a POS Muti-User app, this page
     is used to select from a list of available sessions or create a new session. In a Single-User app,
-    this page doesn't appear because the session is created automatically.
+    this page is a quick interstitial because the session is created automatically. We present the 
+    "Checking for updates" message but the app is actually creating the session. We do this because 
+    the next thing the user sees is either the application home page or a notice that the app is 
+    updating.
 *@
-
+<div style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
+    <LzAppLoading AnimationDurationSeconds="1.0"
+                  LoadingMessage="Checking for updates." />
+</div>
 
 @code {
     private bool isBusy = false;

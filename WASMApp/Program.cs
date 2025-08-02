@@ -1,4 +1,3 @@
-
 public partial class Program
 {
     // _appConfig must be static so that those classes that are registered in the DI container can access it.
@@ -68,9 +67,13 @@ public partial class Program
                 isMAUI: false, // sets isWASM to true
                 isAndroid: false,
                 isLocal: isLocal,
-                useLocalhostApi: useLocalhostApi))
-            .AddBlazorUI();
+                useLocalhostApi: useLocalhostApi));
 
+        // This adds all the App ViewModels
+        builder.Services.AddAppViewModels();
+
+        // This adds all the App Components
+        builder.Services.AddBlazorUI();
         var host = builder.Build();
 
         // Wait for the page to fully load to finish up the Blazor app configuration

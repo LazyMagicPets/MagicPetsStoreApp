@@ -1,23 +1,17 @@
-﻿
-
-using MudBlazor.Services;
-
-namespace BlazorUI;
+﻿namespace BlazorUI;
 
 public static class ConfigureBlazorUI
 {
     public static IServiceCollection AddBlazorUI(this IServiceCollection services)
     {
-        return services
-            .AddBaseApp()
-            .AddAppViewModels()
-            ;
+        services.AddBaseAppBlazorUI();
+        return services;
     }
     public static ILzMessages AddBlazorUIMessages(this ILzMessages lzMessages)
     {
+        lzMessages.AddBaseAppMessages(); // Add the BaseApp messages    
+
         List<string> messages = [
-            "system/{culture}/System/AuthMessages.json",
-            "system/{culture}/System/BaseMessages.json",
             "system/{culture}/StoreApp/Messages.json",
             ];
         lzMessages.MessageFiles.AddRange(messages);

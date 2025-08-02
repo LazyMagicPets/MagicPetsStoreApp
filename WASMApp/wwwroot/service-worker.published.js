@@ -9,7 +9,7 @@ import { appConfig } from './_content/BlazorUI/appConfig.js';
 import { settings } from './_content/BlazorUI/staticContentSettings.js';
 import * as staticContentModule from './_content/BaseApp.BlazorUI/staticContentModule.js'; // Note namespace use
 import { connectivityService } from './_content/LazyMagic.Blazor/connectivityService.js';
-import './_content/BaseApp.BlazorUI/myserviceworker.js';
+import './_content/LazyMagic.Blazor/lzserviceworker.js';
 
 // Note that JS modules are loaded before any assignments to the `self` object
 // This means you must use these self properties inside functions, not inside 

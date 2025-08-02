@@ -6,34 +6,34 @@
 @inject ILzClientConfig ClientConfig
 @inject IOSAccess OSAccess
 @inject ILzMessages Messages
-@inject IBaseAppJS BaseAppJS    
+@inject ILzJsUtilities LzJsUtilities    
 @inject NavigationManager NavigationManager
 @inject ISessionsViewModel SessionsViewModel
 @inject IConnectivityService ConnectivityService
 @inject BrowserFingerprintService BrowserFingerprintService
 
-@if(ClientConfig.Configured)
-{
-    <Router AppAssembly="@typeof(Main).Assembly">
-        <Found Context="routeData">
-            @if (ClientConfig.Configured)
-            {
-                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-            }
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address. @NavigationManager.Uri</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-}
-else
-{
-    <p>Loading Config</p>
-}   
+<Router AppAssembly="@typeof(Main).Assembly">
+    <Found Context="routeData">
+        @if (ClientConfig.Configured)
+        {
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        }
+        else
+        {
+            <div style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
+                <LzAppLoading AnimationDurationSeconds="1.0"
+                              LoadingMessage="Loading your venue." />
+            </div>
+        }
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address. @NavigationManager.Uri</p>
+        </LayoutView>
+    </NotFound>
+</Router>
 
 @code {
     private string tenancyHostUrl = string.Empty;
@@ -43,33 +43,43 @@ else
         {
             try
             {
-                // We initialize the following because the DI container doens't have access
-                // to the JSRuntime until the first render in MAUI.
-                await ConnectivityService.InitializeAsync(JSRuntime);  
+                // Services implemented using Browser features, but referenced in ViewModels require
+                // speical initialization in their implementation. For example these services
+                // may use the JSRuntime, so we can cast the Interface to the concrete implementation
+                // type to give the service access to the JSRuntime as shown below.
+                // An alternative implementation, not using the JSRuntime, would not need this cast
+                // or initialization call.
+                await ((ConnectivityService)ConnectivityService).InitializeAsync(JSRuntime);
+
+                LzJsUtilities.SetJSRuntime(JSRuntime);
+                await LzJsUtilities.Initialize();
+
                 Messages.SetStaticAssets(staticAssets);
-                BaseAppJS.SetJSRuntime(JSRuntime);
-                await BaseAppJS.Initialize();
                 await ClientConfig.InitializeAsync(Host.AssetsUrl);
+
                 BrowserFingerprintService.SetJSRuntime(JSRuntime);
+
+                await SessionsViewModel!.TenantConfigViewModel!.ReadAsync("subtenancy/base/System/tenantconfig.json");
 
                 try
                 {
-                    // Read message files and set the default 
+                    // Read message files and set the default
                     Messages
                         .AddBlazorUIMessages();
                     Messages.AssetsUrl = Host.AssetsUrl;
                     await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Messages.SetMessageSetAsync failed. {ex.Message} ");
-                } 
-                
+                }
+
                 Console.WriteLine("NavigationManager.BaseUri: " + NavigationManager.BaseUri);
 
                 //NavigationManager.NavigateTo("/");
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
