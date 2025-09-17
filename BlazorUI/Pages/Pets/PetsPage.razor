@@ -1,8 +1,9 @@
 ﻿@namespace BlazorUI
 @page "/PetsPage"
 @inherits LzComponentBaseAssignViewModel<PetsViewModel>
-@inject ICurrentSessionViewModel CurrentSessionViewModel
+@inject ISessionViewModel SessionViewModel
 @inject NavigationManager NavigationManager
+@inject IConnectivityService ConnectivityService
 
 <h3>PetsPage</h3>
 @if (ViewModel!.IsLoading)
@@ -11,7 +12,7 @@
 }
 else
 {
-    @if (CurrentSessionViewModel!.IsSignedIn)
+    @if (ConnectivityService.IsOnline)
     {
         <PetsList ViewModel="@ViewModel"
                   OnAddPet="AddPet"
@@ -27,7 +28,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ViewModel = CurrentSessionViewModel!.PetsViewModel;
+        ViewModel = SessionViewModel!.PetsViewModel;
         ViewModel.Clear();
         var (success, msg) = await ViewModel!.ReadAsync();
         if (!success)

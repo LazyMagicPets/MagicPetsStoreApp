@@ -1,7 +1,7 @@
 ﻿@namespace BlazorUI
 @page "/PetEditPage"
 @inherits LzComponentBaseAssignViewModel<PetViewModel>
-@inject ICurrentSessionViewModel CurrentSessionViewModel 
+@inject ISessionViewModel SessionViewModel 
 @inject NavigationManager NavigationManager
 @inject ILoggerFactory LoggerFactory
 @inject IPetViewModelFactory PetViewModelFactory
@@ -42,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        petsViewModel = CurrentSessionViewModel!.PetsViewModel!; 
+        petsViewModel = SessionViewModel!.PetsViewModel!; 
         ViewModel = petsViewModel!.EditViewModel!;  // EditViewModel should be assigned in the PetsViewModel if we are editing an existing item.
         if(ViewModel == null) {
             // Create a new PetViewModel if the PetssViewModel didn't

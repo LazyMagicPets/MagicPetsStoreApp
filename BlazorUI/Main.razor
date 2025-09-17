@@ -1,94 +1,67 @@
 ﻿@namespace BlazorUI
 @inject IJSRuntime JSRuntime
-@inject ILzHost Host
 @inject IStaticAssets staticAssets
-@inject HttpClient HttpClient
-@inject ILzClientConfig ClientConfig
-@inject IOSAccess OSAccess
+@inject ITenantConfigViewModel TenantConfigViewModel
 @inject ILzMessages Messages
-@inject ILzJsUtilities LzJsUtilities    
-@inject NavigationManager NavigationManager
-@inject ISessionsViewModel SessionsViewModel
-@inject IConnectivityService ConnectivityService
-@inject BrowserFingerprintService BrowserFingerprintService
+@inject ILzHost Host
+@inject IStaticAssets StaticAssets
+@inject ILzClientConfig ClientConfig
+@inject ISessionViewModel SessionViewModel
 
-<Router AppAssembly="@typeof(Main).Assembly">
-    <Found Context="routeData">
-        @if (ClientConfig.Configured)
+<CascadingAuthenticationState>
+    <Services />
+    <WindowResize HeaderHeight="@headerHeight" MaxWidth="@maxWidth">
+        @if (isLoading)
         {
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            <div style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
+                <LzAppLoading AnimationDurationSeconds="2.0"
+                              LoadingMessage="Loadng data." />
+            </div>
         }
         else
         {
-            <div style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
-                <LzAppLoading AnimationDurationSeconds="1.0"
-                              LoadingMessage="Loading your venue." />
-            </div>
-        }
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address. @NavigationManager.Uri</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+            <Router AppAssembly="typeof(Main).Assembly">
+                <Found Context="routeData">
+                    <WindowFade FadeDuration="250">
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                    </WindowFade>
+                </Found>
 
+                <NotFound>
+                    <p>Sorry, there's nothing at this address.</p>
+                </NotFound>
+            </Router>
+        }
+    </WindowResize>
+</CascadingAuthenticationState>
 @code {
-    private string tenancyHostUrl = string.Empty;
+    private string themeJson = "";
+    private int headerHeight = 32;
+    private int maxWidth = 1000;
+    private int minWidth = 400;
+    private bool isLoading = true;
+
+    protected override void OnInitialized()
+    {
+        Messages.SetStaticAssets(staticAssets);
+        Messages.AddBlazorUIMessages();
+        base.OnInitialized();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        if(!ClientConfig.Configured)
-        {
-            try
-            {
-                // Services implemented using Browser features, but referenced in ViewModels require
-                // speical initialization in their implementation. For example these services
-                // may use the JSRuntime, so we can cast the Interface to the concrete implementation
-                // type to give the service access to the JSRuntime as shown below.
-                // An alternative implementation, not using the JSRuntime, would not need this cast
-                // or initialization call.
-                await ((ConnectivityService)ConnectivityService).InitializeAsync(JSRuntime);
+        await TenantConfigViewModel!.ReadAsync("subtenancy/base/System/tenantconfig.json");
 
-                LzJsUtilities.SetJSRuntime(JSRuntime);
-                await LzJsUtilities.Initialize();
+        await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
 
-                Messages.SetStaticAssets(staticAssets);
-                await ClientConfig.InitializeAsync(Host.AssetsUrl);
+        await ClientConfig.InitializeAsync(Host.RemoteApiUrl);
 
-                BrowserFingerprintService.SetJSRuntime(JSRuntime);
+        await SessionViewModel.InitAsync();
 
-                await SessionsViewModel!.TenantConfigViewModel!.ReadAsync("subtenancy/base/System/tenantconfig.json");
-
-                try
-                {
-                    // Read message files and set the default
-                    Messages
-                        .AddBlazorUIMessages();
-                    Messages.AssetsUrl = Host.AssetsUrl;
-                    await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Messages.SetMessageSetAsync failed. {ex.Message} ");
-                }
-
-                Console.WriteLine("NavigationManager.BaseUri: " + NavigationManager.BaseUri);
-
-                //NavigationManager.NavigateTo("/");
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
         await base.OnInitializedAsync();
+        isLoading = false;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-    }
+
 }

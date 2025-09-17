@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	<Import Project="$(MSBuildProjectDirectory)/../Solution.Build.props"/>
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -13,7 +13,10 @@
 	</ItemGroup>	
 	
 	<ItemGroup>
-		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all" />
+		<PackageReference Include="LazyMagic.Client.FactoryGenerator" />
+		<PackageReference Include="LazyMagic.OIDC.Base" />
+		<PackageReference Include="ReactiveUI.Fody" />
+		<PackageReference Include="ReactiveUI" />
 	</ItemGroup>
 
 	<ItemGroup>

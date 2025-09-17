@@ -22,12 +22,13 @@ if (window.location.origin.includes("localhost")) {
         console.debug("Running from local development host");
         const { appConfig } = await import('./_content/BlazorUI/appConfig.js');
         window.appConfig = {
-            appPath: appConfig.appPath,
+            appPath: "/", // When running from localhost, the WASM app is at the root.
             appUrl: window.location.origin,
             androidAppUrl: "",
             remoteApiUrl: appConfig.remoteApiUrl,
             localApiUrl: appConfig.localApiUrl,
-            assetsUrl: appConfig.assetsUrl
+            assetsUrl: appConfig.assetsUrl,
+            authConfigName: appConfig.authConfigName,
         };
 
     } catch (error) {
@@ -40,7 +41,9 @@ if (window.location.origin.includes("localhost")) {
     const fullAppPath = new URL(baseHrefElement.href).pathname;
     const pathSegments = fullAppPath.split('/').filter(segment => segment !== '');
     const appPath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
-
+    // Open the appConfig.js file to get subset of configuration values.
+    const { appConfig } = await import('./_content/BlazorUI/appConfig.js');
+    console.log("AppPath: " + appPath);
     window.appConfig = {
         appPath: appPath,
         appUrl: window.location.origin + "/",
@@ -48,7 +51,8 @@ if (window.location.origin.includes("localhost")) {
         remoteApiUrl: window.location.origin + "/",
         localhostApiUrl: "", // We do not set localApiUrl because the app has no access to localhost.
         assetsUrl: window.location.origin + "/",
-        wsUrl: window.location.origin.replace(/^http/, 'ws') + "/"
+        wsUrl: window.location.origin.replace(/^http/, 'ws') + "/",
+        authConfigName: appConfig.authConfigName,
     };
 
     if (navigator.serviceWorker) {

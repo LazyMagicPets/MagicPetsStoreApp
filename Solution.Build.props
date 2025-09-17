@@ -1,0 +1,65 @@
+<Project>
+	<!-- We don't use Directory.Build.props because of some goofy MSBuild behavior. If you place a Directory.Build.props file 
+	     in the folder above the solution folder, you get constant MSBuild restore activity. -->
+
+	<!-- Read System.Build.props values during property evaluation -->
+	<PropertyGroup>
+		<SystemBuildPropsPath>$([MSBuild]::GetPathOfFileAbove('System.Build.props', '$(SolutionDir)..'))</SystemBuildPropsPath>
+		<SystemBuildPropsExists>$([System.IO.File]::Exists('$(SystemBuildPropsPath)'))</SystemBuildPropsExists>
+		<SystemBuildPropsContent Condition="'$(SystemBuildPropsExists)' == 'true'">$([System.IO.File]::ReadAllText('$(SystemBuildPropsPath)'))</SystemBuildPropsContent>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Package Handling -->
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<EmbedAllSources>true</EmbedAllSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<BuildTimestamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildTimestamp>
+		<PackageRepoFolder>$(SolutionDir)\..\Packages</PackageRepoFolder>
+
+
+		<!-- Default values that can be overridden by System.Build.props -->
+		<PkgSuffix></PkgSuffix>
+		<PkgSuffix Condition="'$(SystemBuildPropsExists)' == 'true'">$([System.Text.RegularExpressions.Regex]::Match('$(SystemBuildPropsContent)', '&lt;PkgSuffix&gt;(.*?)&lt;/PkgSuffix&gt;').Groups[1].Value)</PkgSuffix>
+
+		<RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+		<RestorePackagesWithLockFile Condition="'$(SystemBuildPropsExists)' == 'true'">$([System.Text.RegularExpressions.Regex]::Match('$(SystemBuildPropsContent)', '&lt;RestorePackagesWithLockFile&gt;(.*?)&lt;/RestorePackagesWithLockFile&gt;').Groups[1].Value)</RestorePackagesWithLockFile>
+
+		<RestoreLockedMode>false</RestoreLockedMode>
+		<RestoreLockedMode Condition="'$(SystemBuildPropsExists)' == 'true'">$([System.Text.RegularExpressions.Regex]::Match('$(SystemBuildPropsContent)', '&lt;RestoreLockedMode&gt;(.*?)&lt;/RestoreLockedMode&gt;').Groups[1].Value)</RestoreLockedMode>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Identity -->
+		<Copyright>Copyright (c) 2021 - 2025 Insight Sciences Corporation. All rights reserved.</Copyright>
+		<RepositoryType>GitHub</RepositoryType>
+		<Company>Insight Sciences Corporation</Company>
+		<RepositoryUrl>https://github.com/Banquet-Consulting/BaseAppLib.git</RepositoryUrl>
+		<RepositoryType>GitHub</RepositoryType>
+		<Authors>Tim May</Authors>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Compliation -->
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoWarn>$(NoWarn);NU1507</NoWarn>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<SignAssembly>false</SignAssembly>
+	</PropertyGroup>
+
+
+
+	<!-- Add diagnostic messages to verify property values -->
+	<Target Name="PrintPropertyValues" BeforeTargets="Restore">
+		<Message Importance="High" Text="[PropertyValues] PkgSuffix=$(PkgSuffix)" />
+		<Message Importance="High" Text="[PropertyValues] Version=$(Version)" />
+		<Message Importance="High" Text="[PropertyValues] RestorePackagesWithLockFile=$(RestorePackagesWithLockFile)" />
+		<Message Importance="High" Text="[PropertyValues] RestoreLockedMode=$(RestoreLockedMode)" />
+		<Message Importance="High" Text="[PropertyValues] SystemBuildPropsExists=$(SystemBuildPropsExists)" />
+	</Target>
+
+</Project>

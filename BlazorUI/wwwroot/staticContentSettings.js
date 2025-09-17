@@ -1,4 +1,4 @@
-export const settings {
+export const settings = {
     staticAssets: [
         // System
         { "system/base/System/": "PreCache" },

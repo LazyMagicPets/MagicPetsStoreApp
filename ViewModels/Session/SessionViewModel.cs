@@ -1,5 +1,4 @@
-﻿using Amazon;
-using LazyMagic.Client.FactoryGenerator; // do not put in global using. Causes runtime error.
+﻿using LazyMagic.Client.FactoryGenerator; // do not put in global using. Causes runtime error.
 
 namespace ViewModels;
 /// <summary>
@@ -8,7 +7,7 @@ namespace ViewModels;
 /// the data (in this case the PetsViewMode).
 /// </summary>Dep
 [Factory]
-public class SessionViewModel : BaseAppSessionViewModel, ISessionViewModel, ICurrentSessionViewModel
+public class SessionViewModel : BaseAppSessionViewModel, ISessionViewModel
 {
     public SessionViewModel(
         [FactoryInject] ILoggerFactory loggerFactory, // singleton
@@ -16,22 +15,16 @@ public class SessionViewModel : BaseAppSessionViewModel, ISessionViewModel, ICur
         [FactoryInject] IConnectivityService connectivityService, // singleton
         [FactoryInject] ILzHost lzHost, // singleton
         [FactoryInject] ILzMessages messages, // singleton
-        [FactoryInject] IAuthProcess authProcess, // transient
         [FactoryInject] IPetsViewModelFactory petsViewModelFactory, // transient
         [FactoryInject] ICategoriesViewModelFactory categoriesViewModelFactory, // transient
-        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory, // transient
-        ISessionsViewModel sessionsViewModel
+        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory // transient
         )
-        : base(loggerFactory, authProcess, clientConfig, connectivityService, messages,
+        : base(loggerFactory,  connectivityService, messages,
                 petsViewModelFactory, categoriesViewModelFactory, tagsViewModelFactory)  
     {
         try
         {
-            var tenantKey = (string?)clientConfig.TenancyConfig["tenantKey"] ?? throw new Exception("Cognito TenancyConfig.tenantKey is null");
             TenantName = AppConfig.TenantName;
-            authProcess.SetAuthenticator(clientConfig.AuthConfigs?["TenantAuth"]!);
-            authProcess.SetSignUpAllowed(false);
-
         }
         catch (Exception ex)
         {

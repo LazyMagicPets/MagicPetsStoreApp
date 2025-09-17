@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+	<Import Project="$(MSBuildProjectDirectory)/../Solution.Build.props" />
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
@@ -22,8 +22,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
-		<PackageReference Include="LazyMagic.Blazor.Auth" />
 		<PackageReference Include="BaseApp.BlazorUI" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
