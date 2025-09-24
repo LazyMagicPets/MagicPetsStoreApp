@@ -9,27 +9,22 @@
 {
     @if (isAuthenticated)
     {
-        <div class="d-flex align-items-center">
+        <MudToolBar >
             <RememberMeToggle />
-            <span class="me-3">Hello, @userName!</span>
-            <a href="/ProfilePage" class="btn btn-link">Profile</a>
-            <button class="btn btn-link" @onclick="async () => await BeginLogOut()">Log out</button>
-        </div>
+            <MudText Color="Color.Inherit">Hello, @userName!</MudText>
+            <MudButton Color="Color.Inherit" OnClick="async () => await BeginLogOut()">Log Out</MudButton>
+        </MudToolBar>
     }
     else
     {
-        <div class="d-flex align-items-center">
+        <MudToolBar>
+            <MudButton Color="Color.Inherit" OnClick="BeginLogIn">Log In</MudButton>
             @if (isCheckingAuthState)
             {
-                <button class="btn btn-link" @onclick="BeginLogIn">Log in</button>
-                <span class="text-muted small ms-2">Checking login status...</span>
+                <MudText Color="Color.Inherit">Checking login status...</MudText>
             }
-            else
-            {
-                <button class="btn btn-link" @onclick="BeginLogIn">Log in</button>
-            }
-            <button class="btn btn-link text-muted" style="font-size: 0.875rem;" @onclick="HandleForgotPassword">Forgot password?</button>
-        </div>
+            <MudButton Color="Color.Inherit" OnClick="HandleForgotPassword">Forgot Password?</MudButton>
+        </MudToolBar>
     }
 }
 catch (Exception ex)
