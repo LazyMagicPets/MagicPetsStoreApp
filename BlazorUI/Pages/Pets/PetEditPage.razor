@@ -1,9 +1,10 @@
 ﻿@namespace BlazorUI
 @page "/PetEditPage"
 @inherits LzComponentBaseAssignViewModel<PetViewModel>
-@inject ISessionsViewModel SessionsViewModel 
+@inject ISessionViewModel SessionViewModel 
 @inject NavigationManager NavigationManager
 @inject ILoggerFactory LoggerFactory
+@inject IPetViewModelFactory PetViewModelFactory
 
 <h3>PetPage</h3>
 
@@ -41,14 +42,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        petsViewModel = SessionsViewModel!.SessionViewModel!.PetsViewModel!; 
+        petsViewModel = SessionViewModel!.PetsViewModel!; 
         ViewModel = petsViewModel!.EditViewModel!;  // EditViewModel should be assigned in the PetsViewModel if we are editing an existing item.
         if(ViewModel == null) {
             // Create a new PetViewModel if the PetssViewModel didn't
             var pet = new SharedSchema.Pet();
             pet.Id = Guid.NewGuid().ToString(); // You can skip assignment of the Id if it gets assigned by the server
             pet.Name = ""; // null value is not allowed
-            ViewModel = new PetViewModel(LoggerFactory, SessionsViewModel!.SessionViewModel, petsViewModel, pet);
+            ViewModel = PetViewModelFactory.Create( petsViewModel, pet);
             ViewModel.State = LzItemViewModelState.New;
         }
         var (success, msg) = await ViewModel.OpenEditAsync(); // copies the existing data so cancel can restore it

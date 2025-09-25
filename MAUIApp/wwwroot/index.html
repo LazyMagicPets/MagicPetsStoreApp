@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <!-- We have modified the standard MAUI Hybrid Index.hmtl file to rely on assets
-    in the BlazorUI razor library project where the App UI lives. The intent is to 
-    have the skinniest MAUIApp possible so all App level UI code lives in the 
+    in the BlazorUI razor library project where the App UI lives. The intent is to
+    have the skinniest MAUIApp possible so all App level UI code lives in the
     BlazorUI library. -->
 <html lang="en">
 <head>
+    <!-- We use no-cache because we implement our own caching strategy for all assets. -->
+    <meta http-equiv="Cache-Control" content="no-cache">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <base href="/" />
-    <link rel="stylesheet" href="MAUIApp.styles.css" />
-    <link href="_content/BlazorUI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="_content/BlazorUI/css/app.css" rel="stylesheet" />
-    <!-- Do not load application component speicific styles inline. Instead put them
-    in the indexhead.js script. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <base href="" />
+    <link rel="stylesheet" href="_content/LazyMagic.Blazor/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="_content/LazyMagic.Blazor/css/app.css" />
+    <link href="./MAUIApp.styles.css" rel="stylesheet" />
+    <link href="_content/BlazorUI/manifest.json" rel="manifest" />
+
+    <!-- Load addLink(), addScript() functions -->
+    <script src="_content/LazyMagic.Blazor/indexconfig.js"></script>
+
+    <!-- indexhead.js uses addLink() and addScript() to add required elements -->
     <script src="_content/BlazorUI/indexhead.js"></script>
 </head>
 
@@ -26,12 +32,12 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <!-- Do not load application component specific scripts inline. Instead load them
-    in the indexbody.js script. -->
+    <!-- indexbody.js uses addLink() and addScript() to add required elements -->
     <script src="_content/BlazorUI/indexbody.js"></script>
-    <script src="_framework/blazor.webview.js" autostart="false"></script>
-    <script type="module" src="indexinit.js"></script>
 
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+
+    <script type="module" src="indexinit.js"></script>
 </body>
 
 </html>

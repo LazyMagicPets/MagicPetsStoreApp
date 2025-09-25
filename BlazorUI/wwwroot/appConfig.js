@@ -4,5 +4,6 @@ export const appConfig = {
     remoteApiUrl: "https://uptown.lazymagicdev.click/",
     localApiUrl: "https://localhost:5001/",
     assetsUrl: "https://uptown.lazymagicdev.click/",
-    useLocalHostApi: true
+    useLocalHostApi: false,
+    authConfigName: "tenantauth"
 }

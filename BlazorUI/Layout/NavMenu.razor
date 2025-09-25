@@ -1,58 +1,10 @@
 ﻿@namespace BlazorUI
-@inherits LzComponentBaseAssignViewModel<ISessionViewModel>  
-@inject ISessionsViewModel SessionsViewModel
-@implements IDisposable
-@inject NavigationManager NavigationManager
 
-@if(ViewModel != null)
-{
-    <MudNavMenu>
-        <MudNavLink Href="HomePage" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        @if(ViewModel!.IsSignedIn)
-        {
-            <MudNavLink Href="PetsPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Pets">Pets</MudNavLink>
-        }
-    </MudNavMenu>
-} 
-
-@code {
-    [Parameter] public string Title { get; set; } = "";
-    private bool collapseNavMenu = false;
-    private string? currentUrl;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(0);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        ViewModel ??= SessionsViewModel.SessionViewModel;
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
-    protected override void OnInitialized()
-    {
-        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        NavigationManager.LocationChanged += OnLocationChanged;
-    }
-
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
-        StateHasChanged();
-    }
-
-    public new void Dispose()
-    {
-        NavigationManager.LocationChanged -= OnLocationChanged;
-        base.Dispose();
-    }
-} 
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Home</MudNavLink>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="PetsPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Pets</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+</MudNavMenu>

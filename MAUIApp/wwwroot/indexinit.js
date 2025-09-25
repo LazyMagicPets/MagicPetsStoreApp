@@ -1,68 +1,33 @@
-import * as assetsCache from './_content/BlazorUI/staticContentModule.js'; // staticAssets
-//import { assetCaches, fetchAssetCacheList } from './_content/BlazorUI/staticContentModule.js'; // staticAssets
+// Import configurations and key modules
+import { appConfig } from './_content/BlazorUI/appConfig.js';
+import { settings } from './_content/BlazorUI/staticContentSettings.js';
+import * as staticContentModule from './_content/LazyMagic.Blazor/staticContentModule.js'; // Note namespace use
+import { connectivityService } from './_content/LazyMagic.Blazor/connectivityService.js';
+import { uIFetchLoadStaticAssets } from './_content/LazyMagic.Blazor/UIFetch.js';
 
-(async function () {
-    const originalFetch = fetch;
-    console.log("Installing override fetch");
+window.addEventListener('load', function () {
+    window.isLoaded = true;
+});
 
-    console.log("calling assetsCache.fetchAssetsCacheList()");
-    await assetsCache.fetchAssetCacheList();
-    //for (const key of Object.keys(assetsCache.assetCaches))
-    //    console.log("key:" + key);
+window.isLoaded = false; // Used by program.cs to determine if the app is ready to start.
+window.checkIfLoaded = function () {
+    return window.isLoaded;
+};
 
-    window.fetch = async function (...args) {
+// Assign global references to import modules
+window.appConfig = {
+    appPath: appConfig.appPath,
+    appUrl: window.location.origin,
+    androidAppUrl: appConfig.androidAppUrl,
+    remoteApiUrl: appConfig.remoteApiUrl,
+    localApiUrl: appConfig.localApiUrl,
+    assetsUrl: appConfig.assetsUrl
+};
+window.settings = settings;
+window.staticContentModule = staticContentModule;
+window.connectivityService = connectivityService;
 
-        const assetHostUrl = (typeof window.assetHostUrl === "string")
-            ? new URL(window.assetHostUrl)
-            : window.assetHostUrl;
+// Kick off the static asset loading process
+await uIFetchLoadStaticAssets(); // This will load the static assets into the cache(s)
 
-        async function modifyUrl(originalUrl) {
-            let url = new URL(originalUrl);
-            url.hostname = assetHostUrl.hostname;
-            url.port = assetHostUrl.port;
-            return url.href;
-        }
-
-        try {
-            let request = args[0];
-            let options = args[1] || {};
-
-            if (typeof request === 'string')
-                request = new Request(request);
-
-            let staticAsset = false;
-
-            for (const curl of Object.keys(assetsCache.assetCaches)) {
-                if (request.url.includes(curl)) {
-                    staticAsset = true;
-                    break;
-                }
-            }
-
-            //console.log("request.url " + request.url);
-
-            if (staticAsset) {
-
-                if (!assetHostUrl) {
-                    console.error("Asset host URL is not set. Trying to fetch:" + request.url);
-                    return await originalFetch(request); // Default fetch if URL is not set properly
-                }
-                const newUrl = await modifyUrl(request.url);
-                request = new Request(newUrl, {
-                    method: request.method,
-                    headers: request.headers,
-                    mode: request.mode,
-                    credentials: request.credentials,
-                    redirect: request.redirect
-                });
-            }
-            return await originalFetch(request, options);
-        } catch (error) {
-            console.error(error);
-        }
-
-        // Perform the actual fetch
-        const response = await originalFetch.apply(this, args);
-        return response;
-    };
-})();
+window.isLoaded = true; // Let program.cs know that the app is ready to start.

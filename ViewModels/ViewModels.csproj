@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	<Import Project="$(MSBuildProjectDirectory)/../Solution.Build.props"/>
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -7,22 +7,21 @@
 		<DebugType>portable</DebugType>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<TrimmerRootAssembly Include="LazyMagic.Shared" />
 	</ItemGroup>	
 	
 	<ItemGroup>
-		<PackageReference Include="LazyMagic.Client.Auth.Cognito" />
-		<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all" />
-		<PackageReference Include="LazyMagic.Client.ViewModels.Auth.Notifications" />
-		<PackageReference Include="LazyMagic.Shared" />
+		<PackageReference Include="LazyMagic.Client.FactoryGenerator" />
+		<PackageReference Include="LazyMagic.OIDC.Base" />
+		<PackageReference Include="ReactiveUI.Fody" />
+		<PackageReference Include="ReactiveUI" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ConsumerApi" />
+		<PackageReference Include="BaseApp.ViewModels" />
 		<PackageReference Include="StoreApi" />
-		<PackageReference Include="PublicApi" />		
 	</ItemGroup>
 
 </Project>

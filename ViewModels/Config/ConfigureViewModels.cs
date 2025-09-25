@@ -1,23 +1,39 @@
-﻿namespace ViewModels;
+﻿using LazyMagic.Shared;
+
+namespace ViewModels;
 
 public static class ConfigureViewModels
 {
-    public static IServiceCollection AddAppViewModels(this IServiceCollection services)
+    public static IServiceCollection AddViewModels(this IServiceCollection services)
     {
-        var assembly = MethodBase.GetCurrentMethod()?.DeclaringType?.Assembly;
 
-        ViewModelsRegisterFactories.ViewModelsRegister(services);
+        ViewModelsRegisterFactories.ViewModelsRegister(services); // Register Factory Classes
 
-        // LzViewModelFactory.RegisterLz(services, assembly!); // Register services having interfaces ILzTransient, ILzSingleton and ILzScoped
+        // Register the ClientSDK 
+        services.AddScoped<IStoreApi>(serviceProvider =>
+        {
+            var lzHost = serviceProvider.GetRequiredService<ILzHost>();
+            var authenticationHandler = serviceProvider.GetRequiredService<IAuthenticationHandler>();
+            var handler = authenticationHandler.CreateHandler();
+            var httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(lzHost.GetApiUrl("")) // LocalApiUrl or RemoteApiUrl depending on UseLocalhostApi property
+            };
+            var api = new StoreApi.StoreApi(httpClient);
+            return api;
+        });
 
-        services.AddSingleton<ILzClientConfig,LzClientConfig>();    
-        services.AddLazyMagicAuthCognito();
-        services.AddSingleton<ISessionsViewModel, SessionsViewModel>();
-        services.TryAddTransient<IStoreApi, StoreApi.StoreApi>();
-        services.TryAddTransient<IConsumerApi, ConsumerApi.ConsumerApi>();
-        services.TryAddTransient<IPublicApi, PublicApi.PublicApi>();
+        // Register the modules used from the Client SDK.
+        services.AddScoped<IPublicModuleClient>(provider => provider.GetRequiredService<IStoreApi>());
+        services.AddScoped<IConsumerModuleClient>(provider => provider.GetRequiredService<IStoreApi>());
+        services.AddScoped<IStoreModuleClient>(provider => provider.GetRequiredService<IStoreApi>());
+
+        services.AddScoped<ISessionViewModel, SessionViewModel>();
+        services.AddTransient<IBaseAppSessionViewModel>(sp => sp.GetRequiredService<ISessionViewModel>());
+
+        services.AddBaseAppViewModels();
 
         return services;
     }
-
 }
+

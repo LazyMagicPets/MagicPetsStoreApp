@@ -1,0 +1,12 @@
+@namespace BlazorUI
+@inherits LayoutComponentBase
+@inject ILzJsUtilities LzJsUtilities
+
+<MudLayout>
+    <MudMainContent id="yada">
+        <MudContainer>
+            <AppUpdates ViewModel="@LzJsUtilities" />
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

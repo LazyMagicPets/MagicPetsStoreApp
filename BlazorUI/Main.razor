@@ -1,83 +1,68 @@
 ﻿@namespace BlazorUI
 @inject IJSRuntime JSRuntime
-@inject ILzHost Host
 @inject IStaticAssets staticAssets
-@inject HttpClient HttpClient
-@inject ILzClientConfig ClientConfig
-@inject IOSAccess OSAccess
-@inject IBlazorInternetConnectivity InternetConnectivity
+@inject ITenantConfigViewModel TenantConfigViewModel
 @inject ILzMessages Messages
-@inject IBaseAppJS BaseAppJS    
-@inject NavigationManager NavigationManager
-@inject ISessionsViewModel SessionsViewModel
+@inject ILzHost Host
+@inject IStaticAssets StaticAssets
+@inject ILzClientConfig ClientConfig
+@inject ISessionViewModel SessionViewModel
 
-@if(ClientConfig.Configured)
-{
-    <Router AppAssembly="@typeof(Main).Assembly">
-        <Found Context="routeData">
-            @if (ClientConfig.Configured)
-            {
-                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-            }
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address. @NavigationManager.Uri</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-}
-else
-{
-    <p>Loading Config</p>
-}   
+<CascadingAuthenticationState>
+    <Services />
+    <WindowResize HeaderHeight="@headerHeight" MaxWidth="@maxWidth">
+        @if (isLoading)
+        {
+            <div style="width: 9rem; height: 9rem; margin-left: 1rem; margin-top: 1rem;">
+                <LzAppLoading AnimationDurationSeconds="2.0"
+                              LoadingMessage="Loadng data." />
+            </div>
+        }
+        else
+        {
+            <Router AppAssembly="typeof(Main).Assembly"
+                    AdditionalAssemblies="new[] { typeof(Authentication).Assembly }">
+                <Found Context="routeData">
+                    <WindowFade FadeDuration="250">
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                    </WindowFade>
+                </Found>
 
+                <NotFound>
+                    <p>Sorry, there's nothing at this address.</p>
+                </NotFound>
+            </Router>
+        }
+    </WindowResize>
+</CascadingAuthenticationState>
 @code {
-    private string tenancyHostUrl = string.Empty;
+    private string themeJson = "";
+    private int headerHeight = 32;
+    private int maxWidth = 1000;
+    private int minWidth = 400;
+    private bool isLoading = true;
+
+    protected override void OnInitialized()
+    {
+        Messages.SetStaticAssets(staticAssets);
+        Messages.AddBlazorUIMessages();
+        base.OnInitialized();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        if(!ClientConfig.Configured)
-        {
-            try
-            {
-                // We initialize the following because the DI container doens't have access
-                // to the JSRuntime until the first render in MAUI.
-                InternetConnectivity.SetJSRuntime(JSRuntime);
-                await InternetConnectivity.CheckInternetConnectivityAsync();
-                Messages.SetStaticAssets(staticAssets);
-                BaseAppJS.SetJSRuntime(JSRuntime);
-                await BaseAppJS.Initialize();
-                await ClientConfig.InitializeAsync(Host.AssetsUrl);
+        await TenantConfigViewModel!.ReadAsync("subtenancy/base/System/tenantconfig.json");
 
-                try
-                {
-                    // Read message files and set the default 
-                    Messages
-                        .AddBlazorUIMessages();
-                    Messages.AssetsUrl = Host.AssetsUrl;
-                    await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
-                } catch (Exception ex)
-                {
-                    Console.WriteLine($"Messages.SetMessageSetAsync failed. {ex.Message} ");
-                } 
-                
-                Console.WriteLine("NavigationManager.BaseUri: " + NavigationManager.BaseUri);
+        await Messages.SetMessageSetAsync("en-US", LzMessageUnits.Imperial);
 
-                //NavigationManager.NavigateTo("/");
+        await ClientConfig.InitializeAsync(Host.RemoteApiUrl);
 
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
+        await SessionViewModel.InitAsync();
+
         await base.OnInitializedAsync();
+        isLoading = false;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-    }
+
 }

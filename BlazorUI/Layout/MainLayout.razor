@@ -1,11 +1,8 @@
 ﻿@namespace BlazorUI
-@inherits LzLayoutComponentBaseInjectViewModel<ISessionsViewModel>
-@inject IJSRuntime JSRuntime
-@inject ILzHost Host
-@inject IBaseAppJS BaseAppJS
+@inherits LzLayoutComponentBase
 @inject IDialogService DialogService
 
-@* <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/> *@
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/> 
 <MudThemeProvider />
 <MudPopoverProvider />
 <MudDialogProvider />
@@ -13,23 +10,33 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h5" Class="ml-3">Store App</MudText>
-        @* <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" /> *@
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => DrawerToggle())" />
-        @tenancyName Store
-        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Inherit" OnClick="OpenInfoDialogAsync" />
-        <OnLine ViewModel="ViewModel!.SessionViewModel?.InternetConnectivity"/>
-        <SignedIn ViewModel="ViewModel!.SessionViewModel?.AuthProcess"/>
+        <MudStack Row="true" Justify="Justify.SpaceBetween"  Style="width: 100%">
+            <MudStack Row="true" AlignItems="AlignItems.Center" >
+                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => DrawerToggle())" />
+                <MudText Typo="Typo.h5" Class="ml-3">@tenancyName Store App</MudText>
+
+            </MudStack>
+            @* <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" /> *@
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="0" Class="ml-auto gap-2">
+                <OnLine />
+                <LoginDisplay />
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" 
+                               Style="margin: 0; padding: 0;"
+                               Color="Color.Inherit" 
+                               OnClick="OpenInfoDialogAsync" />
+            </MudStack>
+        </MudStack>        
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
             <MudText Typo="Typo.h5" Class="mt-1">Menu</MudText>
         </MudDrawerHeader>
-        <NavMenu Title="@tenancyName" />
+        <NavMenu />
     </MudDrawer>
     <MudMainContent id="yada">
         <MudContainer>
-            <AppUpdates ViewModel="@BaseAppJS" />
+            <AppUpdates />
             @Body
         </MudContainer>
     </MudMainContent>
@@ -56,8 +63,6 @@
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        tenancyName = ViewModel?.TenancyConfig?["tenantKey"]?.ToString();
-
         await base.OnAfterRenderAsync(firstRender);
     }
     private void DrawerToggle()
