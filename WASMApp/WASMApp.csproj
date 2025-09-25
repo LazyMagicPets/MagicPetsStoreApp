@@ -50,6 +50,7 @@
 
 		<Message Text="CSS import paths have been fixed for /$(AppPath)/ base path" Importance="high" Condition="Exists('$(PublishedCssPath)')" />
 		<Warning Text="WASMApp.styles.css not found at $(PublishedCssPath)" Condition="!Exists('$(PublishedCssPath)')" />
+
 	</Target>
 
 </Project>
