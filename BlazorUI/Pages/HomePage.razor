@@ -1,16 +1,8 @@
 ﻿@namespace BlazorUI
-@page "/HomePage"
+@page "/"
 @inherits LzComponentBaseInjectViewModel<ISessionViewModel>
 
-    <AuthorizeView>
-        <Authorized>
-            <MudPaper Height="400px" Width="600px">
-                <MudContainer Fixed="true">
-                    <MudText>Home Page</MudText>
-                </MudContainer>
-            </MudPaper>
-        </Authorized>
-        <NotAuthorized>
-            <MudText>You are not authorized to view this page. Please log in.</MudText>
-        </NotAuthorized>
-    </AuthorizeView>
+<MudPaper Height="200px" Width="300px" Class="d-flex align-center justify-center">
+    <LoginDisplay DisplayStyle="card" />
+</MudPaper>
+

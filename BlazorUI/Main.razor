@@ -20,7 +20,8 @@
         }
         else
         {
-            <Router AppAssembly="typeof(Main).Assembly">
+            <Router AppAssembly="typeof(Main).Assembly"
+                    AdditionalAssemblies="new[] { typeof(Authentication).Assembly }">
                 <Found Context="routeData">
                     <WindowFade FadeDuration="250">
                         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
