@@ -1,26 +1,26 @@
 export const settings = {
     staticAssets: [
-        // System
-        { "system/base/System/": "PreCache" },
-        { "system/en-US/System/": "PreCache" },
-        { "system/es-MX/System/": "LazyCache" },
+        // System (shared across all subtenants)
+        { path: "system/base/System/", cacheType: "PreCache", shared: true },
+        { path: "system/en-US/System/", cacheType: "PreCache", shared: true },
+        { path: "system/es-MX/System/", cacheType: "LazyCache", shared: true },
 
-        // StoreApp
-        { "system/base/StoreApp/": "PreCache" },
-        { "system/en-US/StoreApp/": "PreCache" },
-        { "system/es-MX/StoreApp/": "LazyCache" },
+        // StoreApp (shared across all subtenants)
+        { path: "system/base/StoreApp/", cacheType: "PreCache", shared: true },
+        { path: "system/en-US/StoreApp/", cacheType: "PreCache", shared: true },
+        { path: "system/es-MX/StoreApp/", cacheType: "LazyCache", shared: true },
 
-        // Tenancy
-        { "tenancy/base/System/": "PreCache" },
-        { "tenancy/base/StoreApp/": "PreCache" },
-        { "tenancy/en-US/StoreApp/": "PreCache" },
-        { "tenancy/es-MX/StoreApp/": "LazyCache" },
+        // Tenancy (shared across all subtenants within tenant)
+        { path: "tenancy/base/System/", cacheType: "PreCache", shared: true },
+        { path: "tenancy/base/StoreApp/", cacheType: "PreCache", shared: true },
+        { path: "tenancy/en-US/StoreApp/", cacheType: "PreCache", shared: true },
+        { path: "tenancy/es-MX/StoreApp/", cacheType: "LazyCache", shared: true },
 
-        // Subtenancy
-        { "subtenancy/base/System/": "PreCache" },
-        { "subtenancy/base/StoreApp/": "PreCache" },
-        { "subtenancy/en-US/StoreApp/": "PreCache" },
-        { "subtenancy/es-MX/StoreApp/": "LazyCache" },
+        // Subtenancy (subtenant-specific, requires cache swapping)
+        { path: "subtenancy/base/System/", cacheType: "PreCache", shared: false },
+        { path: "subtenancy/base/StoreApp/", cacheType: "PreCache", shared: false },
+        { path: "subtenancy/en-US/StoreApp/", cacheType: "PreCache", shared: false },
+        { path: "subtenancy/es-MX/StoreApp/", cacheType: "LazyCache", shared: false },
 
     ]
 };

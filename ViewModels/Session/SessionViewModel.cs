@@ -17,10 +17,11 @@ public class SessionViewModel : BaseAppSessionViewModel, ISessionViewModel
         [FactoryInject] ILzMessages messages, // singleton
         [FactoryInject] IPetsViewModelFactory petsViewModelFactory, // transient
         [FactoryInject] ICategoriesViewModelFactory categoriesViewModelFactory, // transient
-        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory // transient
+        [FactoryInject] ITagsViewModelFactory tagsViewModelFactory, // transient
+        [FactoryInject] IChatsViewModelFactory chatsViewModelFactory // transient
         )
         : base(loggerFactory,  connectivityService, messages,
-                petsViewModelFactory, categoriesViewModelFactory, tagsViewModelFactory)  
+                petsViewModelFactory, categoriesViewModelFactory, tagsViewModelFactory, chatsViewModelFactory)
     {
         try
         {

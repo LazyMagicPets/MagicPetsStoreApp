@@ -5,6 +5,15 @@ public class Program
     private static JObject? _appConfig;
     public static async Task Main(string[] args)
     {
+        // ReactiveUI 23.x removed automatic initialization (20.x auto-initialized
+        // via the RxApp static ctor). It must now be initialized explicitly via the
+        // builder before any WhenAnyValue / [Reactive] usage — and the LazyMagic /
+        // BaseApp ViewModel base classes call WhenAnyValue in their constructors,
+        // which run during the first component render. Without this call the first
+        // reactive access throws TypeInitializationException on
+        // ReactiveNotifyPropertyChangedMixin and the app fails to boot.
+        LazyMagic.Blazor.LzReactiveUI.InitializeWasm();
+
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         builder.RootComponents.Add<Main>("#main");
         builder.RootComponents.Add<HeadOutlet>("head::after");
@@ -69,12 +78,33 @@ public class Program
 
         builder.Services.AddApp();
 
-        builder.Services.AddTransient<IAuthenticationHandler, BearerTokenHandler>();
+        // Auth-mode selection (ADDITIVE, opt-in). Config key "AuthMode" in
+        // wwwroot/appsettings.json: "Bff" enables the client-side BFF mode;
+        // anything else (incl. absent) keeps the existing default SPA-token path
+        // EXACTLY as-is. Clean if/else so the default branch is byte-for-byte unchanged.
+        var authMode = builder.Configuration["AuthMode"];
+        var useBff = string.Equals(authMode, "Bff", StringComparison.OrdinalIgnoreCase);
 
-        // Add dynamic OIDC authentication with lazy-loaded configuration
-        // This doesn't block startup waiting for config to load
-        builder.Services.AddLazyMagicOIDCWASM(); // Add services
-        builder.AddLazyMagicOIDCWASMBuilder(); // Add builder configuraiton
+        if (useBff)
+        {
+            // BFF mode: the SPA holds no tokens. The BffCredentialsHandler (registered
+            // as IAuthenticationHandler below) replaces the BearerTokenHandler, so the
+            // existing IAppApi wiring in ConfigureViewModels builds a cookie-credentialed,
+            // same-origin client (credentials:include + X-CSRF:1) with no further change.
+            // The /bff/* endpoints are reached relative to the WASM host's base address.
+            Console.WriteLine("AuthMode=Bff: using client-side BFF auth");
+            builder.Services.AddLazyMagicOIDCWASMBff(builder.HostEnvironment.BaseAddress);
+        }
+        else
+        {
+            // Default SPA-token path — UNCHANGED.
+            builder.Services.AddTransient<IAuthenticationHandler, BearerTokenHandler>();
+
+            // Add dynamic OIDC authentication with lazy-loaded configuration
+            // This doesn't block startup waiting for config to load
+            builder.Services.AddLazyMagicOIDCWASM(); // Add services
+            builder.AddLazyMagicOIDCWASMBuilder(); // Add builder configuraiton
+        }
 
         var host = builder.Build();
 
@@ -92,7 +122,12 @@ public class Program
             return;
         }
 
-        await ConfigureLazyMagicOIDCWASM.LoadConfiguration(host);
+        // SPA-token OIDC config load. Skipped in BFF mode (no SPA OIDC services
+        // are registered there; the BFF provider needs no client-side discovery).
+        if (!useBff)
+        {
+            await ConfigureLazyMagicOIDCWASM.LoadConfiguration(host);
+        }
 
         await host.RunAsync();
 

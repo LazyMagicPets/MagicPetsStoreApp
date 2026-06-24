@@ -2,6 +2,7 @@
 global using LazyMagic.Blazor;
 global using LazyMagic.Client.Base;
 global using LazyMagic.OIDC.WASM;
+global using LazyMagic.OIDC.WASM.Bff;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.JSInterop;

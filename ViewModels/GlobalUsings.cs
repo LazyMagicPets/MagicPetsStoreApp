@@ -8,7 +8,7 @@ global using Microsoft.Extensions.Logging;
 
 
 // Application Specific
-global using StoreApi;
+global using AppApi;
 global using ConsumerModule;
 global using PublicModule;
 global using StoreModule;
