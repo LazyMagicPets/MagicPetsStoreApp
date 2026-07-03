@@ -1,7 +1,10 @@
 ﻿@namespace BlazorUI
 
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Home</MudNavLink>
+    @* Href="" resolves to the app base (e.g. /store/) — the in-app Home route (@page "/").
+       Href="/" would point at the SITE root, leaving the SPA and (when lz-explored is set)
+       hitting the base-href mismatch fatal. See CFRequest.js root-canonical redirect. *@
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Add">Home</MudNavLink>
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="PetsPage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Pets</MudNavLink>

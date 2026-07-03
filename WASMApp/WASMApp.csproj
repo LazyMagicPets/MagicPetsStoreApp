@@ -1,7 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 	<Import Project="$(MSBuildProjectDirectory)/../Solution.Build.props" />
 	<PropertyGroup>
-		<!-- Define the app path for different configurations -->
+		<!-- Define the app path for different configurations.
+		     Release (cloud): /store/ — assets publish under wwwroot/store/ and are
+		       served at /store/ by CloudFront.
+		     Debug (local dev server): / — the WASM dev server serves _framework/
+		       _content at the ROOT. It does NOT honor StaticWebAssetBasePath as a
+		       serving prefix (assets stay at root regardless), so to run the app
+		       under /store/ locally we pass the dev server ASPNETCORE_PATHBASE=/store
+		       (launchSettings.json environmentVariables — NOT commandLineArgs, which
+		       VS forwards but `dotnet run` does not), which shifts the root-served
+		       assets under /store/ to match base href /store/. Keep Debug AppPath=/
+		       so StaticWebAssetBasePath stays root here. -->
 		<AppPath Condition="'$(Configuration)' == 'Release'">/store/</AppPath>
 		<AppPath Condition="'$(Configuration)' == 'Debug'">/</AppPath>
 		<StaticWebAssetBasePath>$(AppPath)</StaticWebAssetBasePath>
@@ -29,11 +39,10 @@
 		<ProjectReference Include="../BlazorUI/BlazorUI.csproj" />
 	</ItemGroup>
 
-	<Target Name="ProcessIndexTemplate" BeforeTargets="Build">
-		<WriteLinesToFile File="wwwroot/index.html"
-						  Lines="$([System.IO.File]::ReadAllText('wwwroot/index.template.html').Replace('{{BASE_HREF}}', '$(AppPath)'))"
-						  Overwrite="true" />
-	</Target>
+	<!-- index.html is now a hand-maintained, source-controlled file (base href is a
+	     config-independent literal "/store/"). The former ProcessIndexTemplate target
+	     that generated it from index.template.html by substituting {{BASE_HREF}} has
+	     been removed along with the template. -->
 
 	<Target Name="FixCssPathsAfterPublish" AfterTargets="Publish" Condition="'$(AppPath)' != ''">
 		<PropertyGroup>

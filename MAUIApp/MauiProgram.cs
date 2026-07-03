@@ -9,6 +9,15 @@ public static class MauiProgram
 
     public static MauiApp CreateMauiApp()
     {
+        // ReactiveUI 23.x removed automatic initialization (20.x auto-initialized via
+        // the RxApp static ctor). The LazyMagic / BaseApp ViewModel base classes call
+        // WhenAnyValue in their constructors, which run during the first component
+        // render — so ReactiveUI MUST be initialized for the MAUI Blazor Hybrid host
+        // before Build(). Without this the first reactive access throws
+        // TypeInitializationException on ReactiveNotifyPropertyChangedMixin and the app
+        // fails to boot. Idempotent. (WASM uses LzReactiveUI.InitializeWasm().)
+        LazyMagic.Blazor.LzReactiveUI.InitializeHybrid();
+
         var builder = MauiApp.CreateBuilder();
         builder
         .UseMauiApp<App>()
@@ -34,6 +43,12 @@ public static class MauiProgram
         // Configure logging
         builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug); // Set minimum log level
         builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);  // Only show Warning and above for ASP.NET Core
+#if DEBUG && WINDOWS
+        // Mirror ILogger output to stdout so unpackaged CLI runs (and the CDP test harness,
+        // which captures the exe's stdout) can see MauiOIDCService/login diagnostics. The
+        // default MAUI Debug provider only reaches an attached debugger.
+        builder.Logging.AddProvider(new StdoutLoggerProvider());
+#endif
 
 
         // Here, we only register classes that require specific MAUI configuration.
@@ -97,3 +112,32 @@ public static class MauiProgram
     }
 
 }
+
+#if DEBUG && WINDOWS
+/// <summary>
+/// Minimal ILogger provider writing to Console (stdout). MAUI's default Debug provider
+/// is invisible outside an attached debugger; unpackaged CLI runs and the Playwright/CDP
+/// harness capture stdout, so this makes login/OIDC diagnostics observable there.
+/// </summary>
+internal sealed class StdoutLoggerProvider : Microsoft.Extensions.Logging.ILoggerProvider
+{
+    public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new StdoutLogger(categoryName);
+    public void Dispose() { }
+
+    private sealed class StdoutLogger : Microsoft.Extensions.Logging.ILogger
+    {
+        private readonly string _category;
+        public StdoutLogger(string category) => _category = category;
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+            => logLevel >= Microsoft.Extensions.Logging.LogLevel.Information;
+        public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId,
+            TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (!IsEnabled(logLevel)) return;
+            var shortCat = _category.Contains('.') ? _category[(_category.LastIndexOf('.') + 1)..] : _category;
+            Console.WriteLine($"[{logLevel}] {shortCat}: {formatter(state, exception)}{(exception != null ? $" EX: {exception.Message}" : "")}");
+        }
+    }
+}
+#endif

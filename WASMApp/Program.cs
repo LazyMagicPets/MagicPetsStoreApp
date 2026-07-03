@@ -93,7 +93,12 @@ public class Program
             // same-origin client (credentials:include + X-CSRF:1) with no further change.
             // The /bff/* endpoints are reached relative to the WASM host's base address.
             Console.WriteLine("AuthMode=Bff: using client-side BFF auth");
-            builder.Services.AddLazyMagicOIDCWASMBff(builder.HostEnvironment.BaseAddress);
+            // Employee-gated app: after logout, land on the public /explore/home/ landing (the BFF
+            // server fans it back to the originating subtenant host) instead of bouncing back through
+            // the gated store to the login.
+            builder.Services.AddLazyMagicOIDCWASMBff(
+                builder.HostEnvironment.BaseAddress,
+                postLogoutRedirectPath: "/explore/home/");
         }
         else
         {
@@ -104,6 +109,32 @@ public class Program
             // This doesn't block startup waiting for config to load
             builder.Services.AddLazyMagicOIDCWASM(); // Add services
             builder.AddLazyMagicOIDCWASMBuilder(); // Add builder configuraiton
+
+            // LOCAL VS-DEBUG ONLY: pin the OIDC redirect_uri to THIS WASM's own
+            // origin (e.g. https://localhost:7218). The cloud /config serves
+            // RedirectUri=<apex>/oauth2/callback — the single Cognito-registered
+            // callback shared by every subtenant — and relies on CFAuthCallback
+            // fanning the OAuth response back to the originating subtenant via the
+            // wrapped `state`. That fan-back targets the /config host (the cloud
+            // subtenant), NEVER localhost, so a VS-hosted WASM would complete login
+            // on the cloud host and this local instance's authorize state would be
+            // orphaned (observed: "Found stale tokens ... cleaning up"). Redirecting
+            // straight back to the localhost origin fixes it — the dev callbacks
+            // https://localhost:7218/authentication/{login,logout}-callback are
+            // registered on the SPA client (systemconfig IncludeDevCallbackUrls;
+            // lz AwsAppRunnerCognitoComponent). This PostConfigure runs AFTER
+            // DynamicOidcPostConfigureOptions (registered inside AddLazyMagicOIDCWASM)
+            // so it wins. Guarded by isLocal → cloud (isLocal=false, and BFF anyway)
+            // is byte-for-byte unaffected.
+            if (isLocal)
+            {
+                var localOrigin = builder.HostEnvironment.BaseAddress.TrimEnd('/');
+                builder.Services.PostConfigure<RemoteAuthenticationOptions<OidcProviderOptions>>(options =>
+                {
+                    options.ProviderOptions.RedirectUri = $"{localOrigin}/authentication/login-callback";
+                    options.ProviderOptions.PostLogoutRedirectUri = $"{localOrigin}/authentication/logout-callback";
+                });
+            }
         }
 
         var host = builder.Build();

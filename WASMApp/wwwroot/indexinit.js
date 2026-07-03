@@ -31,8 +31,17 @@ if (window.location.origin.includes("localhost")) {
         /*** APP LOADED FROM THE LOCALHOST ***/
         console.debug("Running from local development host");
         const { appConfig } = await import('./_content/BlazorUI/appConfig.js');
+        // Derive appPath from the <base href> (e.g. "/store/") rather than
+        // assuming root. WASMApp.csproj serves the dev app under $(AppPath) now,
+        // so the localhost WASM mounts at /store/ just like the cloud — LzHost.AppPath
+        // must match or in-app routing / asset paths diverge from the base href.
+        const localBaseHref = document.querySelector('base');
+        const localFullPath = localBaseHref ? new URL(localBaseHref.href).pathname : "/";
+        const localSegments = localFullPath.split('/').filter(s => s !== '');
+        const localAppPath = localSegments.length > 0 ? '/' + localSegments[0] + '/' : '/';
+        console.log(`Localhost appPath from base href: '${localAppPath}'`);
         window.appConfig = {
-            appPath: "/", // When running from localhost, the WASM app is at the root.
+            appPath: localAppPath,
             appUrl: window.location.origin,
             androidAppUrl: "",
             remoteApiUrl: appConfig.remoteApiUrl,

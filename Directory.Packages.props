@@ -27,19 +27,19 @@
 	</ItemGroup>
 	<ItemGroup>
 		<!-- LazyMagic Package References -->
-		<PackageVersion Include="LazyMagic.Blazor" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.Client.ModelGenerator" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.MudBlazor" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.OIDC.Base" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.OIDC.WASM" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.OIDC.WASM.Bff" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.OIDC.MAUI" Version="3.0.10" />
-		<PackageVersion Include="LazyMagic.Shared" Version="3.0.10" />
+		<PackageVersion Include="LazyMagic.Blazor" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.Client.FactoryGenerator" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.Client.ModelGenerator" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.MudBlazor" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.OIDC.Base" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.OIDC.WASM" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.OIDC.WASM.Bff" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.OIDC.MAUI" Version="3.0.17" />
+		<PackageVersion Include="LazyMagic.Shared" Version="3.0.17" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageVersion Include="BaseApp.ViewModels" Version="1.0.0" />
-		<PackageVersion Include="BaseApp.BlazorUI" Version="1.0.0" />
+		<PackageVersion Include="BaseApp.ViewModels" Version="1.0.1" />
+		<PackageVersion Include="BaseApp.BlazorUI" Version="1.0.1" />
 		<PackageVersion Include="AppApi" Version="1.0.0" />
 	</ItemGroup>
 </Project>

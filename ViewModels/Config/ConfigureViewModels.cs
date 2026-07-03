@@ -20,6 +20,12 @@ public static class ConfigureViewModels
                 BaseAddress = new Uri(lzHost.GetApiUrl("")) // LocalApiUrl or RemoteApiUrl depending on UseLocalhostApi property
             };
             var api = new AppApi.AppApi(httpClient);
+            // Blazor WASM forbids SYNCHRONOUS reads on the HTTP response stream. NSwag's default
+            // ReadObjectResponseAsync path (ReadResponseAsString=false) deserializes straight from
+            // the response Stream synchronously → every AppApi call throws
+            // net_http_synchronous_reads_not_supported (the StoreApp data layer was dead in WASM).
+            // Forcing the string path makes it read the body async (ReadAsStringAsync) first.
+            api.ReadResponseAsString = true;
             return api;
         });
 

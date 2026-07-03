@@ -1,8 +1,28 @@
-﻿@namespace BlazorUI
+@namespace BlazorUI
 @page "/"
 @inherits LzComponentBaseInjectViewModel<ISessionViewModel>
 
-<MudPaper Height="200px" Width="300px" Class="d-flex align-center justify-center">
-    <LoginDisplay DisplayStyle="card" />
-</MudPaper>
-
+@* StoreApp is an employee-gated app: an anonymous visit goes straight to the login page
+   (Cognito), it does NOT show an anonymous shell. <AuthorizeView> resolves via a real
+   /bff/user check, so:
+     - Authorized  → the Home login card (Welcome / Logout affordance)
+     - Authorizing → a brief spinner while /bff/user is checked
+     - NotAuthorized (confirmed anonymous) → RedirectToLogin initiates the BFF login *@
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Height="200px" Width="300px" Class="d-flex align-center justify-center">
+            <LoginDisplay DisplayStyle="card" />
+        </MudPaper>
+    </Authorized>
+    <Authorizing>
+        <MudPaper Height="200px" Width="300px" Class="d-flex align-center justify-center">
+            <MudProgressCircular Indeterminate="true" />
+        </MudPaper>
+    </Authorizing>
+    <NotAuthorized>
+        <BffRedirectToLogin />
+        <MudPaper Height="200px" Width="300px" Class="d-flex align-center justify-center">
+            <MudProgressCircular Indeterminate="true" />
+        </MudPaper>
+    </NotAuthorized>
+</AuthorizeView>

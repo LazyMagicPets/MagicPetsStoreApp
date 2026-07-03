@@ -1,0 +1,26 @@
+@namespace BlazorUI
+@inject IOIDCService AuthService
+
+@* No UI. Rendered only inside <AuthorizeView><NotAuthorized> — i.e. AFTER the BFF auth state
+   has been CONFIRMED anonymous (a real /bff/user 401), never during the in-flight check. On first
+   render it initiates the BFF login (→ /bff/login → Cognito Managed Login), so an anonymous visit
+   to this employee-gated app goes straight to the login page instead of showing an anonymous shell.
+   (Distinct from LazyMagic.Blazor.RedirectToLogin, which targets the SPA-OIDC login route.) *@
+
+@code {
+    private bool _started;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_started) return;
+        _started = true;
+        try
+        {
+            await AuthService.LoginAsync(); // full-page navigation to /bff/login
+        }
+        catch
+        {
+            // Swallow — a failed login navigation just leaves the spinner; the next auth poll retries.
+        }
+    }
+}

@@ -10,7 +10,12 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <base href="/" />
+    <!-- Literal base path (was /, filled from WASMApp.csproj $(AppPath)).
+         MUST end with a trailing slash or Blazor's Router computes the wrong base-
+         relative path and every route falls through to <NotFound>. MUST match
+         WASMApp.csproj StaticWebAssetBasePath (/store/) so the dev server serves the
+         framework/content under the same path the browser resolves relative URLs to. -->
+    <base href="/store/" />
     <link href="WASMApp.styles.css" rel="stylesheet" />
     <link href="_content/LazyMagic.Blazor/css/app.css" rel="stylesheet" />
     <link href="_content/LazyMagic.Blazor/bootstrap/bootstrap.min.css" rel="stylesheet" />

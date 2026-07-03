@@ -3,28 +3,26 @@
     "https Cloud": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "store/",
+      "environmentVariables": {
+        "ASPNETCORE_PATHBASE": "/store"
+      },
       "dotnetRunMessages": true,
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/store/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "applicationUrl": "https://localhost:7218"
     },
     "https Local": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "store/",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Localhost"
+        "ASPNETCORE_ENVIRONMENT": "Localhost",
+        "ASPNETCORE_PATHBASE": "/store"
       },
       "dotnetRunMessages": true,
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/store/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "applicationUrl": "https://localhost:7218"
     }
   },
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:65443",
-      "sslPort": 44372
-    }
-  }
+  "$schema": "http://json.schemastore.org/launchsettings.json"
 }
