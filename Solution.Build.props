@@ -33,11 +33,10 @@
 
 	<PropertyGroup>
 		<!-- Identity -->
-		<Copyright>Copyright (c) 2021 - 2025 Insight Sciences Corporation. All rights reserved.</Copyright>
-		<RepositoryType>GitHub</RepositoryType>
+		<Copyright>Copyright (c) 2021 - 2026 Insight Sciences Corporation. All rights reserved.</Copyright>
 		<Company>Insight Sciences Corporation</Company>
-		<RepositoryUrl>https://github.com/Banquet-Consulting/BaseAppLib.git</RepositoryUrl>
-		<RepositoryType>GitHub</RepositoryType>
+		<RepositoryUrl>https://github.com/LazyMagicPets/MagicPetsStoreApp.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 		<Authors>Tim May</Authors>
 		<Version>1.0.0</Version>
 	</PropertyGroup>
